@@ -38,31 +38,16 @@ public class Assignment1Task1 extends PjWorkshop {
 	}
 	
 	public int[] getValences() {
-		int nov = m_geom.getNumVertices();
-		PiVector valencesVector = new PiVector(nov);
-		int[] valences = new int[nov];
-		valencesVector = m_geom.getVertexValence(m_geom);
-		for (int i = 0; i < nov ; i++ ) {
-			valences[i] = valencesVector.getEntry(i);
-		}
-		return valences;
+
+		return m_geom.getVertexValence(m_geom).getEntries();
 	}
 
 	public int getValencesVectorSize() {
-		int nov = m_geom.getNumVertices();
-		PiVector valencesVector = new PiVector(nov);
-		valencesVector = m_geom.getVertexValence(m_geom);
-		return valencesVector.getSize();
+		return m_geom.getVertexValence(m_geom).getSize();
 	}
 
 	public int getMaxValences() {
-		int nov = m_geom.getNumVertices();
-		PiVector valencesVector = new PiVector(nov);
-		int[] valences = new int[nov];
-		valencesVector = m_geom.getVertexValence(m_geom);
-		for (int i = 0; i < nov ; i++ ) {
-			valences[i] = valencesVector.getEntry(i);
-		}
+		int[] valences = getValences();
 		int valencesMax = valences[0];
 		for (int i = 1; i < valences.length; i++) {
 			if (valences[i] > valencesMax) {
@@ -73,13 +58,7 @@ public class Assignment1Task1 extends PjWorkshop {
 	}
 
 	public int getMinValences() {
-		int nov = m_geom.getNumVertices();
-		PiVector valencesVector = new PiVector(nov);
-		int[] valences = new int[nov];
-		valencesVector = m_geom.getVertexValence(m_geom);
-		for (int i = 0; i < nov ; i++ ) {
-			valences[i] = valencesVector.getEntry(i);
-		}
+		int[] valences = getValences();
 		int valencesMin = valences[0];
 		for (int i = 1; i < valences.length; i++) {
 			if (valences[i] < valencesMin) {
@@ -89,37 +68,28 @@ public class Assignment1Task1 extends PjWorkshop {
 		return valencesMin;
 	}
 
-	public double getMeanValences() {
-		int nov = m_geom.getNumVertices();
-		PiVector valencesVector = new PiVector(nov);
-		int[] valences = new int[nov];
-		valencesVector = m_geom.getVertexValence(m_geom);
-		for (int i = 0; i < nov ; i++ ) {
-			valences[i] = valencesVector.getEntry(i);
-		}
+	public int getValencesSum() {
+		int[] valences = getValences();
 		int valencesSum = 0;
-		for (int j = 1; j < valences.length; j++) {
+		for (int j = 0; j < valences.length; j++) {
 			valencesSum += valences[j];
 		}
+		return valencesSum;
+	}
+	
+	public double getMeanValences() {
+		int[] valences = getValences();
+		int valencesSum = getValencesSum();
 		double valencesMean = valencesSum / valences.length;
 		return valencesMean;
 	}
 
 	public double getStandardDeviation() {
-		int nov = m_geom.getNumVertices();
-		PiVector valencesVector = new PiVector(nov);
-		int[] valences = new int[nov];
-		valencesVector = m_geom.getVertexValence(m_geom);
-		for (int i = 0; i < nov ; i++ ) {
-			valences[i] = valencesVector.getEntry(i);
-		}
-		int valencesSum = 0;
-		for (int j = 1; j < valences.length; j++) {
-			valencesSum += valences[j];
-		}
+		int[] valences = getValences();
+		int valencesSum = getValencesSum();
 		double valencesMean = valencesSum / valences.length;
 		int sumValencesSquare = 0;
-		for (int k = 1; k < valences.length; k++) {
+		for (int k = 0; k < valences.length; k++) {
 			sumValencesSquare += Math.pow(valences[k], 2);
 		}
 		double standardDeviation = Math.sqrt(sumValencesSquare / valences.length - Math.pow(valencesMean, 2));
