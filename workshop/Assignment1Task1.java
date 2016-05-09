@@ -47,25 +47,11 @@ public class Assignment1Task1 extends PjWorkshop {
 	}
 
 	public int getMaxValences() {
-		int[] valences = getValences();
-		int valencesMax = valences[0];
-		for (int i = 1; i < valences.length; i++) {
-			if (valences[i] > valencesMax) {
-				valencesMax = valences[i];
-			}
-		}
-		return valencesMax;
+		return m_geom.getVertexValence(m_geom).max();
 	}
 
 	public int getMinValences() {
-		int[] valences = getValences();
-		int valencesMin = valences[0];
-		for (int i = 1; i < valences.length; i++) {
-			if (valences[i] < valencesMin) {
-				valencesMin = valences[i];
-			}
-		}
-		return valencesMin;
+		return m_geom.getVertexValence(m_geom).min();
 	}
 
 	public int getValencesSum() {
