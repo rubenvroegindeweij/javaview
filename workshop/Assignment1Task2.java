@@ -53,5 +53,16 @@ public class Assignment1Task2 extends PjWorkshop {
 		m_surfQ = surfQ;
 	}
 	
+	public PdVector[] getRandomVerticesFromP(int n){
+		if(n > m_surfP.getNumVertices())
+			n = m_surfP.getNumVertices();
+		 PdVector[] vertices = m_surfP.getVertices();
+		 PdVector[] randomVertices = new PdVector[n];
+		 for(int i = 0; i < n; i++){
+			 int randomNumber = (int)(Math.random()*(m_surfP.getNumVertices()-1));
+			 randomVertices[i] = vertices[randomNumber];
+		 }
+		 return randomVertices;
+	}
 	
 }
