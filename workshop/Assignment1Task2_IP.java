@@ -21,6 +21,9 @@ import jv.project.PvGeometryIf;
 import jv.viewer.PvDisplay;
 import jvx.project.PjWorkshop_IP;
 
+import java.awt.FlowLayout;
+import jv.vecmath.PdVector;
+
 
 /**
  * Info Panel of Workshop for surface registration
@@ -32,6 +35,8 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 	protected	Vector			m_geomList;
 	protected	Assignment1Task2	m_a1t2;
 	protected   Button			m_bSetSurfaces;
+	protected 	Button			m_bGetRandomVertices;
+	protected	Label 			m_lRandomVertices;
 
 	/** Constructor */
 	public Assignment1Task2_IP () {
@@ -81,6 +86,22 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		pSetSurfaces.add(m_bSetSurfaces, BorderLayout.CENTER);
 		add(pSetSurfaces);
 		
+		/*m_bGetRandomVertices = new Button("Get Random Vertices");
+		m_bGetRandomVertices.addActionListener(this);
+		m_lRandomVertices = new Label("Random Vertices");
+		Panel panel1 = new Panel(new FlowLayout(FlowLayout.CENTER));
+		panel1.add(m_bGetRandomVertices);
+		panel1.add(m_lRandomVertices);
+		add(panel1);*/
+		
+		m_bGetRandomVertices = new Button("Compute Volume");
+		m_bGetRandomVertices.addActionListener(this);
+		m_lRandomVertices = new Label("volume");
+		Panel panel1 = new Panel(new FlowLayout(FlowLayout.CENTER));
+		panel1.add(m_bGetRandomVertices);
+		panel1.add(m_lRandomVertices);
+		add(panel1);
+		
 		updateGeomList();
 		validate();
 	}
@@ -126,6 +147,17 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		if (source == m_bSetSurfaces) {
 			m_a1t2.setGeometries((PgElementSet)m_geomList.elementAt(m_listActive.getSelectedIndex()),
 			(PgElementSet)m_geomList.elementAt(m_listPassive.getSelectedIndex()));
+			return;
+		}
+		
+		// Get random vertices action.
+		if (source == m_bGetRandomVertices) {
+			PdVector[] randomVertices = m_a1t2.getRandomVerticesFromP(5);
+			String output = "";
+			for(int i = 0; i < randomVertices.length; i++){
+			output += "[" + Double.toString(randomVertices[i].getEntry(0)) + ", " + Double.toString(randomVertices[i].getEntry(1)) + ", " + Double.toString(randomVertices[i].getEntry(2)) + "],";
+			}
+			m_lRandomVertices.setText(output);
 			return;
 		}
 	}
