@@ -26,13 +26,13 @@ import jvx.project.PjWorkshop;
  */
 
 public class Assignment1Task2 extends PjWorkshop {
-	
-	/** First surface to be registered. */	
-	PgElementSet	m_surfP;	
+
+	/** First surface to be registered. */
+	PgElementSet	m_surfP;
 	/** Second surface to be registered. */
-	PgElementSet	m_surfQ;	
-	
-	
+	PgElementSet	m_surfQ;
+
+
 	/** Constructor */
 	public Assignment1Task2() {
 		super("Assignment 1 Task 2");
@@ -40,18 +40,30 @@ public class Assignment1Task2 extends PjWorkshop {
 			init();
 		}
 	}
-	
+
 	/** Initialization */
 	public void init() {
 		super.init();
 	}
-	
-	
+
+
 	/** Set two Geometries. */
 	public void setGeometries(PgElementSet surfP, PgElementSet surfQ) {
 		m_surfP = surfP;
 		m_surfQ = surfQ;
 	}
-	
-	
+
+	public void searchClosetVertices(PdVector point) {
+
+		PdVector[] pointsQ = m_surfQ.getVertices();
+		double min = pointsQ[0].dist(point);
+		for (int i = 0; i < m_surfQ.getNumVertices(); i++) {
+			PdVector curPoint = pointsQ[i];
+
+			double distance = curPoint.dist(point);
+			if (min > distance) {
+				min = distance;
+			}
+		}
+	}
 }
