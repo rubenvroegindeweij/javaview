@@ -2,6 +2,7 @@ package workshop;
 
 import java.awt.Color;
 import java.util.Vector;
+import java.util.Arrays;
 
 import jv.geom.PgBndPolygon;
 import jv.geom.PgElementSet;
@@ -54,18 +55,19 @@ public class Assignment1Task2 extends PjWorkshop {
 	}
 
 
-	public void searchClosetVertices(PdVector point) {
-
+	public PdVector searchClosestVerticesInQ(PdVector point) {
 		PdVector[] pointsQ = m_surfQ.getVertices();
 		double min = pointsQ[0].dist(point);
+		int index = 0;
 		for (int i = 0; i < m_surfQ.getNumVertices(); i++) {
 			PdVector curPoint = pointsQ[i];
-
 			double distance = curPoint.dist(point);
 			if (min > distance) {
 				min = distance;
+				index = i;
 			}
 		}
+		return pointsQ[index];
 	}
 
 	
@@ -80,6 +82,36 @@ public class Assignment1Task2 extends PjWorkshop {
 		 }
 		 return randomVertices;
 	}
-	
+
+
+	public PdVector[] findClosestVerticesForSelectedPoints(PdVector[] randomVerticesInP){
+		// PdVector[] randomVerticesInP = getRandomVerticesFromP(m);
+		int m = randomVerticesInP.length;
+		PdVector[] closestVerticesInQ = new PdVector[m];
+		for (int i=0; i<m; i++) {
+			closestVerticesInQ[i] = searchClosestVerticesInQ(randomVerticesInP[i]);
+		}
+		return closestVerticesInQ;
+	}
+
+	public double computeMedianDistanceInS(){
+		int m = 100; // select 100 points for testing
+		PdVector[] vInP = getRandomVerticesFromP(m);
+		PdVector[] vInQ = findClosestVerticesForSelectedPoints(vInP);
+		double[] distance = new double[vInQ.length];
+		for (int i=0; i<vInQ.length; i++){
+			distance[i] = vInQ[i].dist(vInQ[i]);
+		}
+		Arrays.sort(distance);
+		if(vInQ.length%2==1){
+			int index = (vInQ.length+1)/2;
+			return distance[index];
+		}
+		else{
+			int index1 = vInQ.length/2;
+			int index2 = index1+1;
+			return (distance[index1]+distance[index2])/2;
+		}
+	}
 
 }
