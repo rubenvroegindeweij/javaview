@@ -53,19 +53,19 @@ public class Assignment1Task1_IP extends PjWorkshop_IP implements ActionListener
 	}
 	
 	public String getNotice() {
-		return "This text should explain what the workshop is about and how to use it.";
+		return "In this application you are able to compoute genus, volume, shape regularites, and valences of all vertices of the current model.";
 	}
 	
 	public void setParent(PsUpdateIf parent) {
 		super.setParent(parent);
 		m_a1t1 = (Assignment1Task1)parent;
 	
-		addSubTitle("In this application you are able to compoute genus, volume, shape regularites and valence.");
+		addSubTitle("Click buttons to get corresponding properties of the model.");
 		
 		// Genus components.
 		m_bComputeGenus = new Button("Compute genus");
 		m_bComputeGenus.addActionListener(this);
-		m_lGenus = new Label("label");
+		m_lGenus = new Label("genus");
 		Panel panel1 = new Panel(new FlowLayout(FlowLayout.CENTER));
 		panel1.add(m_bComputeGenus);
 		panel1.add(m_lGenus);
