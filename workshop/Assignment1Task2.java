@@ -20,6 +20,7 @@ import jv.vecmath.PiVector;
 import jv.vecmath.PuMath;
 import jv.viewer.PvDisplay;
 import jv.project.PvGeometryIf;
+import jv.vecmath.PdMatrix;
 
 import jvx.project.PjWorkshop;
 
@@ -134,5 +135,21 @@ public class Assignment1Task2 extends PjWorkshop {
 				vectorsAL.add(vectors[i]);
 		}
 		return (PdVector[])vectorsAL.toArray();
+	}
+	
+	public PdVector computeCentroid(PdVector[] vectors){
+		PdVector result = (PdVector)vectors[0].clone();
+		for(int i =1; i < vectors.length; i++){
+			result.add(vectors[i]);
+		}
+		result.multScalar(1/((double)vectors.length));
+		return result;
+	}
+	
+	public PdMatrix computeCovarianceMatrix(PdVector[] P, PdVector[] Q){
+		PdVector centroidP = computeCentroid(P);
+		PdVector centroidQ = computeCentroid(Q);
+		
+		return null;
 	}
 }
