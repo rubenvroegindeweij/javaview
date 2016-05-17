@@ -23,6 +23,10 @@ import jvx.project.PjWorkshop_IP;
 
 import java.awt.FlowLayout;
 import jv.vecmath.PdVector;
+import jv.vecmath.PdMatrix;
+import jv.object.PsDebug;
+import Jama.Matrix;
+import Jama.SingularValueDecomposition;
 
 
 /**
@@ -45,6 +49,7 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 	protected	Label 			m_lMedianDistance;
 	protected	Button 			m_bShowDistance;
 	protected	Label 			m_lShowDistance;
+	protected	Button			m_bTransformation;
 
 	/** Constructor */
 	public Assignment1Task2_IP () {
@@ -133,6 +138,12 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		panel4.add(m_bShowDistance);
 		panel4.add(m_lShowDistance);
 		add(panel4);
+		
+		m_bTransformation = new Button("Trasnformation");
+		m_bTransformation.addActionListener(this);
+		Panel panel5 = new Panel(new FlowLayout(FlowLayout.CENTER));
+		panel5.add(m_bTransformation);
+		add(panel5);
 
 		updateGeomList();
 		validate();
@@ -225,6 +236,19 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 			output +=  Double.toString(distances[i]) + ",";
 			}
 			m_lShowDistance.setText(output);
+			return;
+		}
+		
+		if (source == m_bTransformation) {
+			PdMatrix M = m_a1t2.computeCovarianceMatrix(randomVertices, closestVertices);
+			SingularValueDecomposition svd = m_a1t2.SVD(M);
+			PdMatrix optimalRotation = m_a1t2.computeOptimalRotation(svd);
+			PdVector optimalTranslation = m_a1t2.computeOptimalTranslation(randomVertices, closestVertices, svd);
+			m_a1t2.rotateP(optimalRotation);
+			m_a1t2.translateP(optimalTranslation);
+			updateGeomList();
+			validate();
+			m_a1t2.m_surfP.update(event);
 			return;
 		}
 

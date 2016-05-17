@@ -26,6 +26,9 @@ import jv.vecmath.PdMatrix;
 
 import jvx.project.PjWorkshop;
 
+import Jama.Matrix;
+import Jama.SingularValueDecomposition;
+
 /**
  *  Workshop for surface registration
  */
@@ -129,20 +132,29 @@ public class Assignment1Task2 extends PjWorkshop {
 		}
 		return result;
 	}
-	public PdMatrix computeCovarianceMatrix(pointsPin, pointsQin, PdVector pAverage, PdVector qAverage, int n){
-		
-		PdVector[] pointsP = pointsPin;
-		PdVector[] pointsQ = pointsQin;
+	public PdMatrix computeCovarianceMatrix(PdVector[] pointsP, PdVector[] pointsQ){
+		PdVector pAverage = computeCentroid(pointsP);
+		PdVector qAverage = computeCentroid(pointsQ);
 		 
-		PdMatrix m = new PdMatrix();
+		PdMatrix m = new PdMatrix(3);
 		
-		for(int i = 0; i++; i < n){
+		for(int i = 0; i < pointsP.length; i++){
 
 			PdMatrix m_temp = new PdMatrix();
-			m_temp.addJoint(subNew(pointsP[i],pAverage)),(subNew(pointsQ[i],qAverage)));
+			PdVector pTemp = PdVector.subNew(pointsP[i], pAverage);
+			PdVector qTemp = PdVector.subNew(pointsQ[i], qAverage);
+			m_temp.adjoint(pTemp, qTemp);
 			
 			m.add(m_temp);
 		}
+		
+		PsDebug.message("Covariance before division: " + m.toString()); // Debug.
+		
+		m.multScalar(1d/((double)pointsP.length));
+		
+		PsDebug.message("Divider: " + Double.toString(1d/((double)pointsP.length))); // Debug.
+		
+		PsDebug.message("Covariance after division: " + m.toString()); // Debug.
 
 		return m;
 		
@@ -167,4 +179,45 @@ public class Assignment1Task2 extends PjWorkshop {
 		return result;
 	}
 	
+	public SingularValueDecomposition SVD(PdMatrix M){
+		double[][] m = M.getEntries();
+		Matrix jamaM = new Matrix(m);
+		return jamaM.svd();
+	}
+	
+	public PdMatrix computeOptimalRotation(SingularValueDecomposition svd){
+		Matrix middle = Matrix.identity(3, 3);
+		Matrix U = svd.getU();
+		Matrix V = svd.getV();
+		double detVUt = V.times(U.transpose()).det();
+		PsDebug.message("Determinant: " + Double.toString(detVUt)); // Debug.
+		middle.set(2, 2, detVUt);
+		Matrix rotationOptimal = V.times(middle).times(U.transpose());
+		PdMatrix optimalRotation = new PdMatrix(rotationOptimal.getArrayCopy());
+		PsDebug.message("Optimal Rotation Matrix: " + optimalRotation.toString()); // Debug.
+		return  optimalRotation;
+	}
+	
+	public PdVector computeOptimalTranslation(PdVector[] pointsP, PdVector[] pointsQ, SingularValueDecomposition svd){
+		PdVector pAverage = computeCentroid(pointsP);
+		PdVector qAverage = computeCentroid(pointsQ);
+		PdMatrix optimalRotation = computeOptimalRotation(svd);
+		PdVector optimalTranslation = PdVector.subNew(qAverage, optimalRotation.leftMultMatrix(null, pAverage));
+		PsDebug.message("Optimal Translation Vector: " + optimalTranslation.toString()); // Debug.
+		return optimalTranslation;
+	}
+	
+	public void rotateP(PdMatrix rotation){
+		PdVector[] vertices = m_surfP.getVertices();
+		for(int i = 0; i < vertices.length; i++){
+			vertices[i].leftMultMatrix(rotation);
+		}
+	}
+	
+	public void translateP(PdVector translation){
+		PdVector[] vertices = m_surfP.getVertices();
+		for(int i = 0; i < vertices.length; i++){
+			vertices[i].add(translation);
+		}
+	}
 }
