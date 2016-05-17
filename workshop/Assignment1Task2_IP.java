@@ -41,6 +41,8 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 	protected	Label 			m_lClosestVertices;
 	protected	PdVector[] randomVertices = null;
 	protected	PdVector[] closestVertices = null;
+	protected 	Button			m_bGetMedianDistance;
+	protected	Label 			m_lMedianDistance;
 
 	/** Constructor */
 	public Assignment1Task2_IP () {
@@ -114,6 +116,14 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		panel2.add(m_lClosestVertices);
 		add(panel2);
 		
+		m_bGetMedianDistance = new Button("Get Median Distance");
+		m_bGetMedianDistance.addActionListener(this);
+		m_lMedianDistance = new Label("median distance");
+		Panel panel3 = new Panel(new FlowLayout(FlowLayout.CENTER));
+		panel3.add(m_bGetMedianDistance);
+		panel3.add(m_lMedianDistance);
+		add(panel3);
+		
 		updateGeomList();
 		validate();
 	}
@@ -185,6 +195,16 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 			}
 			else
 				m_lClosestVertices.setText("there are no random vertices selected");
+		}
+		
+		if (source == m_bGetMedianDistance) {
+			if(randomVertices != null && closestVertices != null){
+				double median = m_a1t2.computeMedianDistanceInS(randomVertices, closestVertices);
+				m_lMedianDistance.setText(Double.toString(median));
+				return;
+			}
+			else
+				m_lMedianDistance.setText("there are no random vertices selected or closest vertices");
 		}
 	}
 	/**

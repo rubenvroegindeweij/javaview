@@ -92,10 +92,7 @@ public class Assignment1Task2 extends PjWorkshop {
 		return closestVerticesInQ;
 	}
 
-	public double computeMedianDistanceInS(){
-		int m = 100; // select 100 points for testing
-		PdVector[] vInP = getRandomVerticesFromP(m);
-		PdVector[] vInQ = findClosestVerticesForSelectedPoints(vInP);
+	public double computeMedianDistanceInS(PdVector[] vInP, PdVector[] vInQ){
 		double[] distance = new double[vInQ.length];
 		for (int i=0; i<vInQ.length; i++){
 			distance[i] = vInQ[i].dist(vInQ[i]);
