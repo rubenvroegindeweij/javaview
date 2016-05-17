@@ -20,6 +20,9 @@ import jv.vecmath.PiVector;
 import jv.vecmath.PuMath;
 import jv.viewer.PvDisplay;
 import jv.project.PvGeometryIf;
+import jv.vecmath.PdMatrix;
+
+import jv.vecmath.PdMatrix;
 
 import jvx.project.PjWorkshop;
 
@@ -126,6 +129,25 @@ public class Assignment1Task2 extends PjWorkshop {
 		}
 		return result;
 	}
+	public PdMatrix computeCovarianceMatrix(pointsPin, pointsQin, PdVector pAverage, PdVector qAverage, int n){
+		
+		PdVector[] pointsP = pointsPin;
+		PdVector[] pointsQ = pointsQin;
+		 
+		PdMatrix m = new PdMatrix();
+		
+		for(int i = 0; i++; i < n){
+
+			PdMatrix m_temp = new PdMatrix();
+			m_temp.addJoint(subNew(pointsP[i],pAverage)),(subNew(pointsQ[i],qAverage)));
+			
+			m.add(m_temp);
+		}
+
+		return m;
+		
+	}
+	
 	
 	public PdVector[] removeVectors(PdVector[] vectors, double[] distances){
 		ArrayList<PdVector> vectorsAL = new ArrayList<PdVector>();
@@ -135,4 +157,14 @@ public class Assignment1Task2 extends PjWorkshop {
 		}
 		return (PdVector[])vectorsAL.toArray();
 	}
+	
+	public PdVector computeCentroid(PdVector[] vectors){
+		PdVector result = (PdVector)vectors[0].clone();
+		for(int i =1; i < vectors.length; i++){
+			result.add(vectors[i]);
+		}
+		result.multScalar(1/((double)vectors.length));
+		return result;
+	}
+	
 }
