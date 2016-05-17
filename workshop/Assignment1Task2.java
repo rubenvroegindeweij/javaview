@@ -3,6 +3,7 @@ package workshop;
 import java.awt.Color;
 import java.util.Vector;
 import java.util.Arrays;
+import java.util.ArrayList;
 
 import jv.geom.PgBndPolygon;
 import jv.geom.PgElementSet;
@@ -93,10 +94,7 @@ public class Assignment1Task2 extends PjWorkshop {
 	}
 
 	public double computeMedianDistanceInS(PdVector[] vInP, PdVector[] vInQ){
-		double[] distance = new double[vInQ.length];
-		for (int i=0; i<vInQ.length; i++){
-			distance[i] = vInQ[i].dist(vInQ[i]);
-		}
+		double[] distance = getDistances(vInP, vInQ);
 		Arrays.sort(distance);
 		if(vInQ.length%2==1){
 			int index = (vInQ.length+1)/2;
@@ -107,5 +105,34 @@ public class Assignment1Task2 extends PjWorkshop {
 			int index2 = index1+1;
 			return (distance[index1]+distance[index2])/2;
 		}
+	}
+	
+	public double[] getDistances(PdVector[] vInP, PdVector[] vInQ){
+		double[] distances = new double[vInQ.length];
+		for (int i=0; i<vInQ.length; i++){
+			distances[i] = vInQ[i].dist(vInQ[i]);
+		}
+		return distances;
+	}
+	
+	public double[] removeDistances(double[] distances, double median, double k){
+		double threshhold = median * k;
+		double result[] = new double[distances.length];
+		for(int i = 0; i < distances.length; i++){
+			if(distances[i] <= threshhold)
+				result[i] = distances[i];
+			else
+				result[i] = -1d;
+		}
+		return result;
+	}
+	
+	public PdVector[] removeVectors(PdVector[] vectors, double[] distances){
+		ArrayList<PdVector> vectorsAL = new ArrayList<PdVector>();
+		for(int i = 0; i < distances.length; i++){
+			if(distances[i] != -1d)
+				vectorsAL.add(vectors[i]);
+		}
+		return (PdVector[])vectorsAL.toArray();
 	}
 }
