@@ -97,11 +97,11 @@ public class Assignment1Task2 extends PjWorkshop {
 		double[] distance = getDistances(vInP, vInQ);
 		Arrays.sort(distance);
 		if(vInQ.length%2==1){
-			int index = (vInQ.length+1)/2;
+			int index = (vInQ.length+1)/2 - 1; // an array starts from index 0
 			return distance[index];
 		}
 		else{
-			int index1 = vInQ.length/2;
+			int index1 = vInQ.length/2 - 1;
 			int index2 = index1+1;
 			return (distance[index1]+distance[index2])/2;
 		}
@@ -110,7 +110,7 @@ public class Assignment1Task2 extends PjWorkshop {
 	public double[] getDistances(PdVector[] vInP, PdVector[] vInQ){
 		double[] distances = new double[vInQ.length];
 		for (int i=0; i<vInQ.length; i++){
-			distances[i] = vInQ[i].dist(vInQ[i]);
+			distances[i] = vInP[i].dist(vInQ[i]);
 		}
 		return distances;
 	}
