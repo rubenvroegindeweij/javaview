@@ -37,6 +37,10 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 	protected   Button			m_bSetSurfaces;
 	protected 	Button			m_bGetRandomVertices;
 	protected	Label 			m_lRandomVertices;
+	protected 	Button			m_bGetClosestVertices;
+	protected	Label 			m_lClosestVertices;
+	protected	PdVector[] randomVertices = null;
+	protected	PdVector[] closestVertices = null;
 
 	/** Constructor */
 	public Assignment1Task2_IP () {
@@ -94,13 +98,21 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		panel1.add(m_lRandomVertices);
 		add(panel1);*/
 		
-		m_bGetRandomVertices = new Button("Compute Volume");
+		m_bGetRandomVertices = new Button("Get Random Vertices");
 		m_bGetRandomVertices.addActionListener(this);
-		m_lRandomVertices = new Label("volume");
+		m_lRandomVertices = new Label("random vertices");
 		Panel panel1 = new Panel(new FlowLayout(FlowLayout.CENTER));
 		panel1.add(m_bGetRandomVertices);
 		panel1.add(m_lRandomVertices);
 		add(panel1);
+		
+		m_bGetClosestVertices = new Button("Get Closest Vertices");
+		m_bGetClosestVertices.addActionListener(this);
+		m_lClosestVertices = new Label("closest vertices");
+		Panel panel2 = new Panel(new FlowLayout(FlowLayout.CENTER));
+		panel2.add(m_bGetClosestVertices);
+		panel2.add(m_lClosestVertices);
+		add(panel2);
 		
 		updateGeomList();
 		validate();
@@ -152,13 +164,27 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		
 		// Get random vertices action.
 		if (source == m_bGetRandomVertices) {
-			PdVector[] randomVertices = m_a1t2.getRandomVerticesFromP(5);
+			randomVertices = m_a1t2.getRandomVerticesFromP(5);
 			String output = "";
 			for(int i = 0; i < randomVertices.length; i++){
 			output += "[" + Double.toString(randomVertices[i].getEntry(0)) + ", " + Double.toString(randomVertices[i].getEntry(1)) + ", " + Double.toString(randomVertices[i].getEntry(2)) + "],";
 			}
 			m_lRandomVertices.setText(output);
 			return;
+		}
+		
+		if (source == m_bGetClosestVertices) {
+			if(randomVertices != null){
+				closestVertices = m_a1t2.getClosestVerticesFromQ(randomVertices);
+				String output = "";
+				for(int i = 0; i < randomVertices.length; i++){
+				output += "[" + Double.toString(closestVertices[i].getEntry(0)) + ", " + Double.toString(closestVertices[i].getEntry(1)) + ", " + Double.toString(closestVertices[i].getEntry(2)) + "],";
+				}
+				m_lClosestVertices.setText(output);
+				return;
+			}
+			else
+				m_lClosestVertices.setText("there are no random vertices selected");
 		}
 	}
 	/**

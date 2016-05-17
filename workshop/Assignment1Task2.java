@@ -54,21 +54,23 @@ public class Assignment1Task2 extends PjWorkshop {
 	}
 
 
-	public void searchClosetVertices(PdVector point) {
+	public PdVector searchClosestVertices(PdVector point) {
 
 		PdVector[] pointsQ = m_surfQ.getVertices();
+		PdVector minV = pointsQ[0];
 		double min = pointsQ[0].dist(point);
-		for (int i = 0; i < m_surfQ.getNumVertices(); i++) {
+		for (int i = 1; i < m_surfQ.getNumVertices(); i++) {
 			PdVector curPoint = pointsQ[i];
 
 			double distance = curPoint.dist(point);
 			if (min > distance) {
 				min = distance;
+				minV = curPoint;
 			}
 		}
+		return minV;
 	}
 
-	
 	public PdVector[] getRandomVerticesFromP(int n){
 		if(n > m_surfP.getNumVertices())
 			n = m_surfP.getNumVertices();
@@ -81,5 +83,21 @@ public class Assignment1Task2 extends PjWorkshop {
 		 return randomVertices;
 	}
 	
-
+	public PdVector[] getClosestVerticesFromQ(PdVector[] vertices){
+		PdVector[] closestVertices = new PdVector[vertices.length];
+		for(int i = 0; i < vertices.length; i++){
+			closestVertices[i] = searchClosestVertices(vertices[i]);
+		}
+		return closestVertices;
+	}
+	
+	public double[] getDistances(PdVector[] set1, PdVector[] set2){
+		if(set1.length != set2.length)
+			return null;
+		double[] result = new double[set1.length];
+		for(int i = 0; i < set1.length; i++){
+			result[i] = PdVector.dist(set1[i], set2[i]);
+		}
+		return result;
+	}
 }
