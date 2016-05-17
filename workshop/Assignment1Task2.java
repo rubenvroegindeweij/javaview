@@ -129,7 +129,7 @@ public class Assignment1Task2 extends PjWorkshop {
 		}
 		return result;
 	}
-	public double[][] computeM(pointsPin, pointsQin, PdVector pAverage, PdVector qAverage, int n){
+	public PdMatrix computeCovarianceMatrix(pointsPin, pointsQin, PdVector pAverage, PdVector qAverage, int n){
 		
 		PdVector[] pointsP = pointsPin;
 		PdVector[] pointsQ = pointsQin;
@@ -143,6 +143,8 @@ public class Assignment1Task2 extends PjWorkshop {
 			
 			m.add(m_temp);
 		}
+
+		return m;
 		
 	}
 	
@@ -165,10 +167,4 @@ public class Assignment1Task2 extends PjWorkshop {
 		return result;
 	}
 	
-	public PdMatrix computeCovarianceMatrix(PdVector[] P, PdVector[] Q){
-		PdVector centroidP = computeCentroid(P);
-		PdVector centroidQ = computeCentroid(Q);
-		
-		return null;
-	}
 }
