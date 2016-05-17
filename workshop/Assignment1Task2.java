@@ -2,6 +2,7 @@ package workshop;
 
 import java.awt.Color;
 import java.util.Vector;
+import java.util.Arrays;
 
 import jv.geom.PgBndPolygon;
 import jv.geom.PgElementSet;
@@ -54,14 +55,12 @@ public class Assignment1Task2 extends PjWorkshop {
 	}
 
 
-	public PdVector searchClosestVertices(PdVector point) {
-
+	public PdVector searchClosestVerticesInQ(PdVector point) {
 		PdVector[] pointsQ = m_surfQ.getVertices();
 		PdVector minV = pointsQ[0];
 		double min = pointsQ[0].dist(point);
 		for (int i = 1; i < m_surfQ.getNumVertices(); i++) {
 			PdVector curPoint = pointsQ[i];
-
 			double distance = curPoint.dist(point);
 			if (min > distance) {
 				min = distance;
@@ -82,22 +81,34 @@ public class Assignment1Task2 extends PjWorkshop {
 		 }
 		 return randomVertices;
 	}
-	
-	public PdVector[] getClosestVerticesFromQ(PdVector[] vertices){
-		PdVector[] closestVertices = new PdVector[vertices.length];
-		for(int i = 0; i < vertices.length; i++){
-			closestVertices[i] = searchClosestVertices(vertices[i]);
+
+	public PdVector[] findClosestVerticesForSelectedPoints(PdVector[] randomVerticesInP){
+		// PdVector[] randomVerticesInP = getRandomVerticesFromP(m);
+		int m = randomVerticesInP.length;
+		PdVector[] closestVerticesInQ = new PdVector[m];
+		for (int i=0; i<m; i++) {
+			closestVerticesInQ[i] = searchClosestVerticesInQ(randomVerticesInP[i]);
 		}
-		return closestVertices;
+		return closestVerticesInQ;
 	}
-	
-	public double[] getDistances(PdVector[] set1, PdVector[] set2){
-		if(set1.length != set2.length)
-			return null;
-		double[] result = new double[set1.length];
-		for(int i = 0; i < set1.length; i++){
-			result[i] = PdVector.dist(set1[i], set2[i]);
+
+	public double computeMedianDistanceInS(){
+		int m = 100; // select 100 points for testing
+		PdVector[] vInP = getRandomVerticesFromP(m);
+		PdVector[] vInQ = findClosestVerticesForSelectedPoints(vInP);
+		double[] distance = new double[vInQ.length];
+		for (int i=0; i<vInQ.length; i++){
+			distance[i] = vInQ[i].dist(vInQ[i]);
 		}
-		return result;
+		Arrays.sort(distance);
+		if(vInQ.length%2==1){
+			int index = (vInQ.length+1)/2;
+			return distance[index];
+		}
+		else{
+			int index1 = vInQ.length/2;
+			int index2 = index1+1;
+			return (distance[index1]+distance[index2])/2;
+		}
 	}
 }

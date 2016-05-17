@@ -175,7 +175,7 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		
 		if (source == m_bGetClosestVertices) {
 			if(randomVertices != null){
-				closestVertices = m_a1t2.getClosestVerticesFromQ(randomVertices);
+				closestVertices = m_a1t2.findClosestVerticesForSelectedPoints(randomVertices);
 				String output = "";
 				for(int i = 0; i < randomVertices.length; i++){
 				output += "[" + Double.toString(closestVertices[i].getEntry(0)) + ", " + Double.toString(closestVertices[i].getEntry(1)) + ", " + Double.toString(closestVertices[i].getEntry(2)) + "],";
