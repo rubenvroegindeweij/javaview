@@ -199,7 +199,7 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		
 		// Get random vertices action.
 		if (source == m_bGetRandomVertices) {
-			randomVertices = m_a1t2.getRandomVerticesFromP(5);
+			randomVertices = m_a1t2.getRandomVerticesFromP(1000);
 			String output = "";
 			for(int i = 0; i < randomVertices.length; i++){
 			output += "[" + Double.toString(randomVertices[i].getEntry(0)) + ", " + Double.toString(randomVertices[i].getEntry(1)) + ", " + Double.toString(randomVertices[i].getEntry(2)) + "],";
