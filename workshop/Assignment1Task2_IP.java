@@ -246,6 +246,7 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 			PdVector optimalTranslation = m_a1t2.computeOptimalTranslation(randomVertices, closestVertices, svd);
 			m_a1t2.rotateP(optimalRotation);
 			m_a1t2.translateP(optimalTranslation);
+			m_a1t2.calculateError(optimalRotation, optimalTranslation, randomVertices, closestVertices);
 			updateGeomList();
 			validate();
 			m_a1t2.m_surfP.update(event);

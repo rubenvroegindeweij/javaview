@@ -220,4 +220,18 @@ public class Assignment1Task2 extends PjWorkshop {
 			vertices[i].add(translation);
 		}
 	}
+
+	public void calculateError(PdMatrix rotation, PdVector translation, PdVector[] randomVerticesInP, PdVector[] closestVerticesInQ){
+		double errorAll = 0;
+		for(int i = 0; i < randomVerticesInP.length; i++){
+			randomVerticesInP[i].leftMultMatrix(rotation);
+			randomVerticesInP[i].add(translation);
+			double distance = randomVerticesInP[i].dist(closestVerticesInQ[i]);
+			errorAll += distance * distance;
+		}
+		PsDebug.message("errorAll: " + Double.toString(errorAll)); // Debug
+		double errorAvg = errorAll/randomVerticesInP.length;
+		PsDebug.message("errorAvg: " + Double.toString(errorAvg)); // Debug
+		// return errorAvg;
+	}
 }
