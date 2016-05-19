@@ -45,6 +45,10 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 	protected	Label 			m_lClosestVertices;
 	protected	PdVector[] 		randomVertices = null;
 	protected	PdVector[]		closestVertices = null;
+	protected	double[]		distances = null;
+	protected	PdVector[] 		randomVerticesAfterRemove = null;
+	protected	PdVector[]		closestVerticesAfterRemove = null;
+	protected	double[]		distancesAfterRemove = null;
 	protected 	Button			m_bGetMedianDistance;
 	protected	Label 			m_lMedianDistance;
 	protected	Button 			m_bShowDistance;
@@ -123,20 +127,20 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		panel2.add(m_lClosestVertices);
 		add(panel2);
 		
-		m_bGetMedianDistance = new Button("Get Median Distance");
-		m_bGetMedianDistance.addActionListener(this);
-		m_lMedianDistance = new Label("median distance");
-		Panel panel3 = new Panel(new FlowLayout(FlowLayout.CENTER));
-		panel3.add(m_bGetMedianDistance);
-		panel3.add(m_lMedianDistance);
-		add(panel3);
-		
 		m_bShowDistance = new Button("Show Distance");
 		m_bShowDistance.addActionListener(this);
 		m_lShowDistance = new Label("distances");
+		Panel panel3 = new Panel(new FlowLayout(FlowLayout.CENTER));
+		panel3.add(m_bShowDistance);
+		panel3.add(m_lShowDistance);
+		add(panel3);
+		
+		m_bGetMedianDistance = new Button("Get Median Distance");
+		m_bGetMedianDistance.addActionListener(this);
+		m_lMedianDistance = new Label("median distance");
 		Panel panel4 = new Panel(new FlowLayout(FlowLayout.CENTER));
-		panel4.add(m_bShowDistance);
-		panel4.add(m_lShowDistance);
+		panel4.add(m_bGetMedianDistance);
+		panel4.add(m_lMedianDistance);
 		add(panel4);
 		
 		m_bTransformation = new Button("Trasnformation");
@@ -218,19 +222,8 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 				m_lClosestVertices.setText("there are no random vertices selected");
 		}
 		
-		if (source == m_bGetMedianDistance) {
-			if(randomVertices != null && closestVertices != null){
-				double median = m_a1t2.computeMedianDistanceInS(randomVertices, closestVertices);
-				m_lMedianDistance.setText(Double.toString(median));
-				return;
-			}
-			else
-				m_lMedianDistance.setText("there are no random vertices selected or closest vertices");
-		}
-
 		if (source == m_bShowDistance) {
-			// randomVertices = m_a1t2.getRandomVerticesFromP(5);
-			double[] distances = m_a1t2.getDistances(randomVertices, closestVertices);
+			distances = m_a1t2.getDistances(randomVertices, closestVertices);
 			String output = "";
 			for(int i = 0; i < distances.length; i++){
 			output +=  Double.toString(distances[i]) + ",";
@@ -239,11 +232,25 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 			return;
 		}
 		
+		if (source == m_bGetMedianDistance) {
+			if(distances != null){
+				double median = m_a1t2.computeMedianDistanceInS(distances);
+				m_lMedianDistance.setText(Double.toString(median));
+				return;
+			}
+			else
+				m_lMedianDistance.setText("there are no distances calculated");
+		}
+		
 		if (source == m_bTransformation) {
-			PdMatrix M = m_a1t2.computeCovarianceMatrix(randomVertices, closestVertices);
+			double median = m_a1t2.computeMedianDistanceInS(distances);
+			distancesAfterRemove = m_a1t2.removeDistances(distances, median, 10);
+			randomVerticesAfterRemove = m_a1t2.removeVectors(randomVertices, distancesAfterRemove);
+			closestVerticesAfterRemove = m_a1t2.removeVectors(closestVertices, distancesAfterRemove);
+			PdMatrix M = m_a1t2.computeCovarianceMatrix(randomVerticesAfterRemove, closestVerticesAfterRemove);
 			SingularValueDecomposition svd = m_a1t2.SVD(M);
 			PdMatrix optimalRotation = m_a1t2.computeOptimalRotation(svd);
-			PdVector optimalTranslation = m_a1t2.computeOptimalTranslation(randomVertices, closestVertices, svd);
+			PdVector optimalTranslation = m_a1t2.computeOptimalTranslation(randomVerticesAfterRemove, closestVerticesAfterRemove, svd);
 			m_a1t2.rotateP(optimalRotation);
 			m_a1t2.translateP(optimalTranslation);
 			updateGeomList();

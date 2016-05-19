@@ -99,15 +99,14 @@ public class Assignment1Task2 extends PjWorkshop {
 		return closestVerticesInQ;
 	}
 
-	public double computeMedianDistanceInS(PdVector[] vInP, PdVector[] vInQ){
-		double[] distance = getDistances(vInP, vInQ);
+	public double computeMedianDistanceInS(double[] distance){
 		Arrays.sort(distance);
-		if(vInQ.length%2==1){
-			int index = (vInQ.length+1)/2 - 1; // an array starts from index 0
+		if(distance.length%2==1){
+			int index = (distance.length+1)/2 - 1; // an array starts from index 0
 			return distance[index];
 		}
 		else{
-			int index1 = vInQ.length/2 - 1;
+			int index1 = distance.length/2 - 1;
 			int index2 = index1+1;
 			return (distance[index1]+distance[index2])/2;
 		}
@@ -167,7 +166,7 @@ public class Assignment1Task2 extends PjWorkshop {
 			if(distances[i] != -1d)
 				vectorsAL.add(vectors[i]);
 		}
-		return (PdVector[])vectorsAL.toArray();
+		return vectorsAL.toArray(new PdVector[0]);
 	}
 	
 	public PdVector computeCentroid(PdVector[] vectors){
