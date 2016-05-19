@@ -15,6 +15,8 @@ import jv.object.PsDialog;
 import jv.object.PsUpdateIf;
 import jvx.project.PjWorkshop_IP;
 
+import jv.object.PsDebug;
+
 public class Assignment1Task1_IP extends PjWorkshop_IP implements ActionListener {
 
 	// Genus components.
@@ -34,6 +36,19 @@ public class Assignment1Task1_IP extends PjWorkshop_IP implements ActionListener
 	protected Label m_lMinValences;
 	protected Label m_lMeanValences;
 	protected Label m_lstandardDeviation;
+	
+	// Shape regularities components.
+	protected Button m_bgetShapeRegularites;
+	protected Button m_bgetMaxShapeRegularity;
+	protected Button m_bgetMinShapeRegularity;
+	protected Button m_bgetMeanShapeRegularity;
+	protected Button m_bstandardDeviationShapeRegularity;
+	protected Button m_bcolorShapeRegularities;
+	protected Label m_lShapeRegularities;
+	protected Label m_lMaxShapeRegularity;
+	protected Label m_lMinShapeRegularity;
+	protected Label m_lMeanShapeRegularity;
+	protected Label m_lstandardDeviationShapeRegularity;
 	
 	// Volume components.
 	protected Button m_bComputeVolume;
@@ -105,14 +120,44 @@ public class Assignment1Task1_IP extends PjWorkshop_IP implements ActionListener
 		panel2.add(m_lstandardDeviation);
 		add(panel2);
 		
+		// Shape regularities components.
+		m_bgetShapeRegularites = new Button("Get Shape Regularities");
+		m_bgetShapeRegularites.addActionListener(this);
+		m_bgetMaxShapeRegularity = new Button("Get Maximum Shape Regularity");
+		m_bgetMaxShapeRegularity.addActionListener(this);
+		m_bgetMinShapeRegularity = new Button("Get Minimum Shape Regularity");
+		m_bgetMinShapeRegularity.addActionListener(this);
+		m_bgetMeanShapeRegularity = new Button("Get Mean of Shape Regularity");
+		m_bgetMeanShapeRegularity.addActionListener(this);
+		m_bstandardDeviationShapeRegularity = new Button("Calculate the Standard Deviation");
+		m_bstandardDeviationShapeRegularity.addActionListener(this);
+		m_bcolorShapeRegularities = new Button("Color shape regularities");
+		m_bcolorShapeRegularities.addActionListener(this);
+		m_lShapeRegularities = new Label("shape regularities");
+		m_lMaxShapeRegularity = new Label("max shape regularities");
+		m_lMinShapeRegularity = new Label("min shape regularities");
+		m_lMeanShapeRegularity = new Label("mean shape regularities");
+		m_lstandardDeviationShapeRegularity = new Label("standardDeviation");
+		Panel panel3 = new Panel(new FlowLayout(FlowLayout.CENTER));
+		panel3.add(m_bgetMaxShapeRegularity);
+		panel3.add(m_lMaxShapeRegularity);
+		panel3.add(m_bgetMinShapeRegularity);
+		panel3.add(m_lMinShapeRegularity);
+		panel3.add(m_bgetMeanShapeRegularity);
+		panel3.add(m_lMeanShapeRegularity);
+		panel3.add(m_bstandardDeviationShapeRegularity);
+		panel3.add(m_lstandardDeviationShapeRegularity);
+		panel3.add(m_bcolorShapeRegularities);
+		add(panel3);
+		
 		// Volume components.
 		m_bComputeVolume = new Button("Compute Volume");
 		m_bComputeVolume.addActionListener(this);
 		m_lVolume = new Label("volume");
-		Panel panel3 = new Panel(new FlowLayout(FlowLayout.CENTER));
-		panel3.add(m_bComputeVolume);
-		panel3.add(m_lVolume);
-		add(panel3);
+		Panel panel4 = new Panel(new FlowLayout(FlowLayout.CENTER));
+		panel4.add(m_bComputeVolume);
+		panel4.add(m_lVolume);
+		add(panel4);
 		
 		validate();
 	}
@@ -164,6 +209,42 @@ public class Assignment1Task1_IP extends PjWorkshop_IP implements ActionListener
 		if (source == m_bstandardDeviation) {
 			double standardDeviation = m_a1t1.getStandardDeviation();
 			m_lstandardDeviation.setText(Double.toString(standardDeviation));
+			m_a1t1.m_geom.update(m_a1t1.m_geom);
+			return;
+		}
+		
+		// Shape regularities action.
+		if (source == m_bgetMaxShapeRegularity) {
+			double[] shapeRegularities = m_a1t1.computeShapeRegularity();
+			double maxShapeRegularity = m_a1t1.getMaximumShapeRegularity(shapeRegularities);
+			m_lMaxShapeRegularity.setText(Double.toString(maxShapeRegularity));
+			m_a1t1.m_geom.update(m_a1t1.m_geom);
+			return;
+		}
+		if (source == m_bgetMinShapeRegularity) {
+			double[] shapeRegularities = m_a1t1.computeShapeRegularity();
+			double minShapeRegularity = m_a1t1.getMinimumShapeRegularity(shapeRegularities);
+			m_lMinShapeRegularity.setText(Double.toString(minShapeRegularity));
+			m_a1t1.m_geom.update(m_a1t1.m_geom);
+			return;
+		}
+		if (source == m_bgetMeanShapeRegularity) {
+			double[] shapeRegularities = m_a1t1.computeShapeRegularity();
+			double meanShapeRegularity = m_a1t1.getAverageShapeRegularity(shapeRegularities);
+			m_lMeanShapeRegularity.setText(Double.toString(meanShapeRegularity));
+			m_a1t1.m_geom.update(m_a1t1.m_geom);
+			return;
+		}
+		if (source == m_bstandardDeviationShapeRegularity) {
+			double[] shapeRegularities = m_a1t1.computeShapeRegularity();
+			double standardDeviation = m_a1t1.getSDofShapeRegularities(shapeRegularities);
+			m_lstandardDeviationShapeRegularity.setText(Double.toString(standardDeviation));
+			m_a1t1.m_geom.update(m_a1t1.m_geom);
+			return;
+		}
+		if (source == m_bcolorShapeRegularities) {
+			double[] shapeRegularities = m_a1t1.computeShapeRegularity();
+			m_a1t1.colorRegularities(shapeRegularities);
 			m_a1t1.m_geom.update(m_a1t1.m_geom);
 			return;
 		}

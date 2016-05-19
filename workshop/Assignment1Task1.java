@@ -10,6 +10,8 @@ import jv.vecmath.PdVector;
 import jv.vecmath.PiVector;
 import jvx.project.PjWorkshop;
 
+import jv.object.PsDebug;
+
 public class Assignment1Task1 extends PjWorkshop {
 
 	PgElementSet m_geom;
@@ -91,33 +93,21 @@ public class Assignment1Task1 extends PjWorkshop {
 	public double[] computeShapeRegularity(){
 		
 		PiVector[] elements = m_geom.getElements();
-		
 		int sizeElements = m_geom.getNumElements();
-		
 		double[] shapeRegularities = new double[sizeElements];
-		
 		for(int i = 0; i<sizeElements;i++){
-			
 			if(elements[i].getSize() != 3) {
-				
 				shapeRegularities[i] = 10000d;
 				continue; //if not a triange
 			}
 			
-			int a = elements[i].getEntry(0);
-			int b = elements[i].getEntry(1);
-			int c = elements[i].getEntry(2);
-			
-			double angle_a = m_geom.getVertexAngle(i,a);
-			double angle_b = m_geom.getVertexAngle(i,b);
-			double angle_c = m_geom.getVertexAngle(i,c);
+			double angle_a = m_geom.getVertexAngle(i,0);
+			double angle_b = m_geom.getVertexAngle(i,1);
+			double angle_c = m_geom.getVertexAngle(i,2);
 			
 			double sAngle = Math.min(Math.min(angle_a, angle_b), angle_c); //smallest angle of current triangle
-			
 			double temp = (2.0/Math.sin(sAngle)); //Shape regularity of current triangle
-			
 			shapeRegularities[i] = temp;
-			
 		}
 		
 		return shapeRegularities;
@@ -136,7 +126,7 @@ public class Assignment1Task1 extends PjWorkshop {
 		return min;
 	}
 	
-	public double getMaxmumShapeRegularity(double[] shapeRegularities){
+	public double getMaximumShapeRegularity(double[] shapeRegularities){
 		
 		double max = 0;
 		for(int i = 0; i<shapeRegularities.length;i++){
@@ -156,13 +146,13 @@ public class Assignment1Task1 extends PjWorkshop {
 			total += shapeRegularities[i];
 		}
 		
-		double average = total/(Double)shapeRegularities.length;
+		double average = total/(double)shapeRegularities.length;
 		
 		return average;
 		
 	}
 	
-	public double getSDofShapeRegularities(){
+	public double getSDofShapeRegularities(double[] shapeRegularities){
 		
 		double sumOfRegularitiesSquare = 0;
 		int amountOfTriangles = 0;
@@ -173,7 +163,7 @@ public class Assignment1Task1 extends PjWorkshop {
 			sumOfRegularitiesSquare += Math.pow(shapeRegularities[i],2);
 		}
 		
-		averageShapeRegularity = get getAverageShapeRegularity(shapeRegularities);
+		double averageShapeRegularity = getAverageShapeRegularity(shapeRegularities);
 		double standardDeviation = Math.sqrt(sumOfRegularitiesSquare / amountOfTriangles - Math.pow(averageShapeRegularity, 2));
 		return standardDeviation;
 	}
@@ -182,18 +172,15 @@ public class Assignment1Task1 extends PjWorkshop {
 		
 		double minS = getMinimumShapeRegularity(shapeRegularities);
 		
-		double maxS = getMaxmumShapeRegularity(shapeRegularities);
+		double maxS = getMaximumShapeRegularity(shapeRegularities);
 		
 		//assure that the color array is allocated
 		m_geom.assureElementColors();
 				
 		for(int i = 0; i<shapeRegularities.length;i++){
 				
-				float shade = (Float)(shapeRegularities[i]/maxS);
-				Color c = Color.getHSBColor(shade, 1.0, 1.0);
-				
-			}
-			
+				float shade = (float)(shapeRegularities[i]/maxS);
+				Color c = Color.getHSBColor(shade, 1.0f, 1.0f);
 		}
 		
 		m_geom.showElementColorFromVertices(false);
