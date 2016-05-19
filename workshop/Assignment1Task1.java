@@ -1,6 +1,7 @@
 package workshop;
 
 import java.awt.Color;
+import java.util.Arrays;
 import java.util.Random;
 
 import jv.geom.PgElementSet;
@@ -85,5 +86,118 @@ public class Assignment1Task1 extends PjWorkshop {
 	public double computeVolume() {
 		double volume = m_geom.getVolume();
 		return volume;
+	}
+	
+	public double[] computeShapeRegularity(){
+		
+		PiVector[] elements = m_geom.getElements();
+		
+		int sizeElements = m_geom.getNumElements();
+		
+		double[] shapeRegularities = new double[sizeElements];
+		
+		for(int i = 0; i<sizeElements;i++){
+			
+			if(elements[i].getSize() != 3) {
+				
+				shapeRegularities[i] = 10000d;
+				continue; //if not a triange
+			}
+			
+			int a = elements[i].getEntry(0);
+			int b = elements[i].getEntry(1);
+			int c = elements[i].getEntry(2);
+			
+			double angle_a = m_geom.getVertexAngle(i,a);
+			double angle_b = m_geom.getVertexAngle(i,b);
+			double angle_c = m_geom.getVertexAngle(i,c);
+			
+			double sAngle = Math.min(Math.min(angle_a, angle_b), angle_c); //smallest angle of current triangle
+			
+			double temp = (2.0/Math.sin(sAngle)); //Shape regularity of current triangle
+			
+			shapeRegularities[i] = temp;
+			
+		}
+		
+		return shapeRegularities;
+	}
+	
+	public double getMinimumShapeRegularity(double[] shapeRegularities){
+		
+		double min = 100000000000d;
+		for(int i = 0; i<shapeRegularities.length;i++){
+			
+			if(min > shapeRegularities[i]) {
+				min = shapeRegularities[i];
+			}
+			
+		}
+		return min;
+	}
+	
+	public double getMaxmumShapeRegularity(double[] shapeRegularities){
+		
+		double max = 0;
+		for(int i = 0; i<shapeRegularities.length;i++){
+			
+			if(max < shapeRegularities[i]) {
+				max = shapeRegularities[i];
+			}
+		}
+		return max;
+	}
+	
+	public double getAverageShapeRegularity(double[] shapeRegularities){
+		
+		double total = 0;
+		
+		for(int i = 0; i<shapeRegularities.length;i++){
+			total += shapeRegularities[i];
+		}
+		
+		double average = total/(Double)shapeRegularities.length;
+		
+		return average;
+		
+	}
+	
+	public double getSDofShapeRegularities(){
+		
+		double sumOfRegularitiesSquare = 0;
+		int amountOfTriangles = 0;
+		
+		for(int i = 0; i<shapeRegularities.length;i++){
+			
+			if(shapeRegularities[i] != 10000d) amountOfTriangles++;
+			sumOfRegularitiesSquare += Math.pow(shapeRegularities[i],2);
+		}
+		
+		averageShapeRegularity = get getAverageShapeRegularity(shapeRegularities);
+		double standardDeviation = Math.sqrt(sumOfRegularitiesSquare / amountOfTriangles - Math.pow(averageShapeRegularity, 2));
+		return standardDeviation;
+	}
+
+	public void colorRegularities(double[] shapeRegularities){
+		
+		double minS = getMinimumShapeRegularity(shapeRegularities);
+		
+		double maxS = getMaxmumShapeRegularity(shapeRegularities);
+		
+		//assure that the color array is allocated
+		m_geom.assureElementColors();
+				
+		for(int i = 0; i<shapeRegularities.length;i++){
+				
+				float shade = (Float)(shapeRegularities[i]/maxS);
+				Color c = Color.getHSBColor(shade, 1.0, 1.0);
+				
+			}
+			
+		}
+		
+		m_geom.showElementColorFromVertices(false);
+		m_geom.showElementColors(true);	
+		m_geom.showSmoothElementColors(false);
 	}
 }
