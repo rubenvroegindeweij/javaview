@@ -39,20 +39,12 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 	protected	Vector			m_geomList;
 	protected	Assignment1Task2	m_a1t2;
 	protected   Button			m_bSetSurfaces;
-	protected 	Button			m_bGetRandomVertices;
-	protected	Label 			m_lRandomVertices;
-	protected 	Button			m_bGetClosestVertices;
-	protected	Label 			m_lClosestVertices;
 	protected	PdVector[] 		randomVertices = null;
 	protected	PdVector[]		closestVertices = null;
 	protected	double[]		distances = null;
 	protected	PdVector[] 		randomVerticesAfterRemove = null;
 	protected	PdVector[]		closestVerticesAfterRemove = null;
 	protected	double[]		distancesAfterRemove = null;
-	protected 	Button			m_bGetMedianDistance;
-	protected	Label 			m_lMedianDistance;
-	protected	Button 			m_bShowDistance;
-	protected	Label 			m_lShowDistance;
 	protected	Button			m_bTransformation;
 
 	/** Constructor */
@@ -103,51 +95,11 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		pSetSurfaces.add(m_bSetSurfaces, BorderLayout.CENTER);
 		add(pSetSurfaces);
 		
-		/*m_bGetRandomVertices = new Button("Get Random Vertices");
-		m_bGetRandomVertices.addActionListener(this);
-		m_lRandomVertices = new Label("Random Vertices");
-		Panel panel1 = new Panel(new FlowLayout(FlowLayout.CENTER));
-		panel1.add(m_bGetRandomVertices);
-		panel1.add(m_lRandomVertices);
-		add(panel1);*/
-		
-		m_bGetRandomVertices = new Button("Get Random Vertices");
-		m_bGetRandomVertices.addActionListener(this);
-		m_lRandomVertices = new Label("random vertices");
-		Panel panel1 = new Panel(new FlowLayout(FlowLayout.CENTER));
-		panel1.add(m_bGetRandomVertices);
-		panel1.add(m_lRandomVertices);
-		add(panel1);
-		
-		m_bGetClosestVertices = new Button("Get Closest Vertices");
-		m_bGetClosestVertices.addActionListener(this);
-		m_lClosestVertices = new Label("closest vertices");
-		Panel panel2 = new Panel(new FlowLayout(FlowLayout.CENTER));
-		panel2.add(m_bGetClosestVertices);
-		panel2.add(m_lClosestVertices);
-		add(panel2);
-		
-		m_bShowDistance = new Button("Show Distance");
-		m_bShowDistance.addActionListener(this);
-		m_lShowDistance = new Label("distances");
-		Panel panel3 = new Panel(new FlowLayout(FlowLayout.CENTER));
-		panel3.add(m_bShowDistance);
-		panel3.add(m_lShowDistance);
-		add(panel3);
-		
-		m_bGetMedianDistance = new Button("Get Median Distance");
-		m_bGetMedianDistance.addActionListener(this);
-		m_lMedianDistance = new Label("median distance");
-		Panel panel4 = new Panel(new FlowLayout(FlowLayout.CENTER));
-		panel4.add(m_bGetMedianDistance);
-		panel4.add(m_lMedianDistance);
-		add(panel4);
-		
 		m_bTransformation = new Button("Trasnformation");
 		m_bTransformation.addActionListener(this);
-		Panel panel5 = new Panel(new FlowLayout(FlowLayout.CENTER));
-		panel5.add(m_bTransformation);
-		add(panel5);
+		Panel panel1 = new Panel(new FlowLayout(FlowLayout.CENTER));
+		panel1.add(m_bTransformation);
+		add(panel1);
 
 		updateGeomList();
 		validate();
@@ -197,52 +149,11 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 			return;
 		}
 		
-		// Get random vertices action.
-		if (source == m_bGetRandomVertices) {
-			randomVertices = m_a1t2.getRandomVerticesFromP(1000);
-			String output = "";
-			for(int i = 0; i < randomVertices.length; i++){
-			output += "[" + Double.toString(randomVertices[i].getEntry(0)) + ", " + Double.toString(randomVertices[i].getEntry(1)) + ", " + Double.toString(randomVertices[i].getEntry(2)) + "],";
-			}
-			m_lRandomVertices.setText(output);
-			return;
-		}
-		
-		if (source == m_bGetClosestVertices) {
-			if(randomVertices != null){
-				closestVertices = m_a1t2.findClosestVerticesForSelectedPoints(randomVertices);
-				String output = "";
-				for(int i = 0; i < randomVertices.length; i++){
-				output += "[" + Double.toString(closestVertices[i].getEntry(0)) + ", " + Double.toString(closestVertices[i].getEntry(1)) + ", " + Double.toString(closestVertices[i].getEntry(2)) + "],";
-				}
-				m_lClosestVertices.setText(output);
-				return;
-			}
-			else
-				m_lClosestVertices.setText("there are no random vertices selected");
-		}
-		
-		if (source == m_bShowDistance) {
-			distances = m_a1t2.getDistances(randomVertices, closestVertices);
-			String output = "";
-			for(int i = 0; i < distances.length; i++){
-			output +=  Double.toString(distances[i]) + ",";
-			}
-			m_lShowDistance.setText(output);
-			return;
-		}
-		
-		if (source == m_bGetMedianDistance) {
-			if(distances != null){
-				double median = m_a1t2.computeMedianDistanceInS(distances);
-				m_lMedianDistance.setText(Double.toString(median));
-				return;
-			}
-			else
-				m_lMedianDistance.setText("there are no distances calculated");
-		}
-		
 		if (source == m_bTransformation) {
+			randomVertices = m_a1t2.getRandomVerticesFromP(1000);
+			closestVertices = m_a1t2.findClosestVerticesForSelectedPoints(randomVertices);
+			distances = m_a1t2.getDistances(randomVertices, closestVertices);
+			
 			double median = m_a1t2.computeMedianDistanceInS(distances);
 			distancesAfterRemove = m_a1t2.removeDistances(distances, median, 10);
 			randomVerticesAfterRemove = m_a1t2.removeVectors(randomVertices, distancesAfterRemove);
