@@ -179,7 +179,7 @@ public class Assignment1Task1 extends PjWorkshop {
 				
 		for(int i = 0; i<shapeRegularities.length;i++){
 				float shade = (float)((shapeRegularities[i]-minS)/(maxS-minS));
-				Color c = Color.getHSBColor(1.0f, shade, 1.0f);
+				Color c = Color.getHSBColor(0.5f, 1.0f, shade);
 				m_geom.setElementColor(i, c);
 		}
 		

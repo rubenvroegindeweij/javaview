@@ -48,6 +48,13 @@ public class Assignment1Task2 extends PjWorkshop {
 			init();
 		}
 	}
+	
+	public Assignment1Task2(String s) {
+		super(s);
+		if (getClass() == Assignment1Task2.class) {
+			init();
+		}
+	}
 
 	/** Initialization */
 	public void init() {

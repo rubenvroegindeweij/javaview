@@ -9,6 +9,7 @@ import java.awt.List;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.TextArea;
 import java.util.Vector;
 
 import jv.geom.PgElementSet;
@@ -46,6 +47,7 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 	protected	PdVector[]		closestVerticesAfterRemove = null;
 	protected	double[]		distancesAfterRemove = null;
 	protected	Button			m_bTransformation;
+	protected	TextArea		textAreaOutput;
 
 	/** Constructor */
 	public Assignment1Task2_IP () {
@@ -97,8 +99,10 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		
 		m_bTransformation = new Button("Trasnformation");
 		m_bTransformation.addActionListener(this);
+		textAreaOutput = new TextArea("Hello", 5, 40);
 		Panel panel1 = new Panel(new FlowLayout(FlowLayout.CENTER));
 		panel1.add(m_bTransformation);
+		panel1.add(textAreaOutput);
 		add(panel1);
 
 		updateGeomList();
