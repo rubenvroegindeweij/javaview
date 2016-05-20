@@ -97,7 +97,7 @@ public class Assignment1Task1 extends PjWorkshop {
 		double[] shapeRegularities = new double[sizeElements];
 		for(int i = 0; i<sizeElements;i++){
 			if(elements[i].getSize() != 3) {
-				shapeRegularities[i] = 10000d;
+				shapeRegularities[i] = -1;
 				continue; //if not a triange
 			}
 			
@@ -106,7 +106,7 @@ public class Assignment1Task1 extends PjWorkshop {
 			double angle_c = m_geom.getVertexAngle(i,2);
 			
 			double sAngle = Math.min(Math.min(angle_a, angle_b), angle_c); //smallest angle of current triangle
-			double temp = (2.0/Math.sin(sAngle)); //Shape regularity of current triangle
+			double temp = (2.0/Math.sin(Math.toRadians(sAngle))); //Shape regularity of current triangle
 			shapeRegularities[i] = temp;
 		}
 		
@@ -115,7 +115,7 @@ public class Assignment1Task1 extends PjWorkshop {
 	
 	public double getMinimumShapeRegularity(double[] shapeRegularities){
 		
-		double min = 100000000000d;
+		double min = Double.MAX_VALUE;
 		for(int i = 0; i<shapeRegularities.length;i++){
 			
 			if(min > shapeRegularities[i]) {
@@ -159,7 +159,7 @@ public class Assignment1Task1 extends PjWorkshop {
 		
 		for(int i = 0; i<shapeRegularities.length;i++){
 			
-			if(shapeRegularities[i] != 10000d) amountOfTriangles++;
+			if(shapeRegularities[i] != -1d) amountOfTriangles++;
 			sumOfRegularitiesSquare += Math.pow(shapeRegularities[i],2);
 		}
 		
@@ -178,11 +178,9 @@ public class Assignment1Task1 extends PjWorkshop {
 		m_geom.assureElementColors();
 				
 		for(int i = 0; i<shapeRegularities.length;i++){
-				
 				float shade = (float)((shapeRegularities[i]-minS)/(maxS-minS));
-				Color c = Color.getHSBColor(shade, 1.0f, 1.0f);
+				Color c = Color.getHSBColor(1.0f, shade, 1.0f);
 				m_geom.setElementColor(i, c);
-				//PsDebug.message("Shade: " + Float.toString(shade)); // Debug.
 		}
 		
 		m_geom.showElementColorFromVertices(false);
