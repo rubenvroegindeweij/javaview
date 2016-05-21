@@ -53,4 +53,21 @@ public class Assignment1Task3 extends Assignment1Task2 {
 	public void init() {
 		super.init();
 	}
+	
+	//http://www.9math.com/book/projection-point-plane
+	//https://en.wikipedia.org/wiki/Plane_(geometry)
+	public PdVector projectPointOnPlane(PdVector vertex, PdVector normal){
+		double a = normal.m_data[0];
+		double b = normal.m_data[1];
+		double c = normal.m_data[2];
+		double u = vertex.m_data[0];
+		double v = vertex.m_data[1];
+		double w = vertex.m_data[2];
+		double d = -(a*u+b*v+c*w);
+		double multiplier = (a*u+b*v+c*w+d)/(a*a+b*b+c*c);
+		double x = u - a * multiplier;
+		double y = v - b * multiplier;
+		double z = w - c * multiplier;
+		return new PdVector(x, y ,z);
+	}
 }
