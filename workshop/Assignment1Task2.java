@@ -97,7 +97,6 @@ public class Assignment1Task2 extends PjWorkshop {
 	}
 
 	public PdVector[] findClosestVerticesForSelectedPoints(PdVector[] randomVerticesInP){
-		// PdVector[] randomVerticesInP = getRandomVerticesFromP(m);
 		int m = randomVerticesInP.length;
 		PdVector[] closestVerticesInQ = new PdVector[m];
 		for (int i=0; i<m; i++) {
@@ -109,7 +108,7 @@ public class Assignment1Task2 extends PjWorkshop {
 	public double computeMedianDistanceInS(double[] distance){
 		Arrays.sort(distance);
 		if(distance.length%2==1){
-			int index = (distance.length+1)/2 - 1; // an array starts from index 0
+			int index = (distance.length+1)/2 - 1;
 			return distance[index];
 		}
 		else{
@@ -149,18 +148,19 @@ public class Assignment1Task2 extends PjWorkshop {
 			PdMatrix m_temp = new PdMatrix();
 			PdVector pTemp = PdVector.subNew(pointsP[i], pAverage);
 			PdVector qTemp = PdVector.subNew(pointsQ[i], qAverage);
+			// Compute pTemp * qTemp^t
 			m_temp.adjoint(pTemp, qTemp);
 			
 			m.add(m_temp);
 		}
 		
-		PsDebug.message("Covariance before division: " + m.toString()); // Debug.
+		// PsDebug.message("Covariance before division: " + m.toString());
 		
 		m.multScalar(1d/((double)pointsP.length));
 		
-		PsDebug.message("Divider: " + Double.toString(1d/((double)pointsP.length))); // Debug.
+		// PsDebug.message("Divider: " + Double.toString(1d/((double)pointsP.length)));
 		
-		PsDebug.message("Covariance after division: " + m.toString()); // Debug.
+		// PsDebug.message("Covariance after division: " + m.toString());
 
 		return m;
 		
@@ -192,24 +192,24 @@ public class Assignment1Task2 extends PjWorkshop {
 	}
 	
 	public PdMatrix computeOptimalRotation(SingularValueDecomposition svd){
-		Matrix middle = Matrix.identity(3, 3);
+		Matrix tempMatrix = Matrix.identity(3, 3);
 		Matrix U = svd.getU();
 		Matrix V = svd.getV();
 		double detVUt = V.times(U.transpose()).det();
-		PsDebug.message("Determinant: " + Double.toString(detVUt)); // Debug.
-		middle.set(2, 2, detVUt);
-		Matrix rotationOptimal = V.times(middle).times(U.transpose());
+		// PsDebug.message("Determinant: " + Double.toString(detVUt));
+		tempMatrix.set(2, 2, detVUt);
+		Matrix rotationOptimal = V.times(tempMatrix).times(U.transpose());
 		PdMatrix optimalRotation = new PdMatrix(rotationOptimal.getArrayCopy());
-		PsDebug.message("Optimal Rotation Matrix: " + optimalRotation.toString()); // Debug.
+		// PsDebug.message("Optimal Rotation Matrix: " + optimalRotation.toString());
 		return  optimalRotation;
 	}
 	
-	public PdVector computeOptimalTranslation(PdVector[] pointsP, PdVector[] pointsQ, SingularValueDecomposition svd){
+	public PdVector computeOptimalTranslation(PdVector[] pointsP, PdVector[] pointsQ, SingularValueDecomposition svd, PdMatrix optimalRotation){
 		PdVector pAverage = computeCentroid(pointsP);
 		PdVector qAverage = computeCentroid(pointsQ);
-		PdMatrix optimalRotation = computeOptimalRotation(svd);
+		// PdMatrix optimalRotation = computeOptimalRotation(svd);
 		PdVector optimalTranslation = PdVector.subNew(qAverage, optimalRotation.leftMultMatrix(null, pAverage));
-		PsDebug.message("Optimal Translation Vector: " + optimalTranslation.toString()); // Debug.
+		// PsDebug.message("Optimal Translation Vector: " + optimalTranslation.toString());
 		return optimalTranslation;
 	}
 	
@@ -227,17 +227,15 @@ public class Assignment1Task2 extends PjWorkshop {
 		}
 	}
 
-	public void calculateError(PdMatrix rotation, PdVector translation, PdVector[] randomVerticesInP, PdVector[] closestVerticesInQ){
+	public double calculateError(PdVector[] randomVerticesInP, PdVector[] closestVerticesInQ){
 		double errorAll = 0;
 		for(int i = 0; i < randomVerticesInP.length; i++){
-			// randomVerticesInP[i].leftMultMatrix(rotation);
-			// randomVerticesInP[i].add(translation);
 			double distance = randomVerticesInP[i].dist(closestVerticesInQ[i]);
 			errorAll += distance * distance;
 		}
-		PsDebug.message("errorAll: " + Double.toString(errorAll)); // Debug
+		// PsDebug.message("errorAll: " + Double.toString(errorAll));
 		double errorAvg = errorAll/randomVerticesInP.length;
-		PsDebug.message("errorAvg: " + Double.toString(errorAvg)); // Debug
-		// return errorAvg;
+		// PsDebug.message("errorAvg: " + Double.toString(errorAvg));
+		return errorAvg;
 	}
 }
