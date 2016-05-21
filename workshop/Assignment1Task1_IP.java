@@ -22,7 +22,7 @@ public class Assignment1Task1_IP extends PjWorkshop_IP implements ActionListener
 	// Genus components.
 	protected Button m_bComputeGenus;
 	protected Label m_lGenus;
-	
+
 	// Valence components.
 	protected Button m_bgetValences;
 	protected Button m_bgetvalencesVectorSize;
@@ -36,7 +36,7 @@ public class Assignment1Task1_IP extends PjWorkshop_IP implements ActionListener
 	protected Label m_lMinValences;
 	protected Label m_lMeanValences;
 	protected Label m_lstandardDeviation;
-	
+
 	// Shape regularities components.
 	protected Button m_bgetShapeRegularites;
 	protected Button m_bgetMaxShapeRegularity;
@@ -49,34 +49,34 @@ public class Assignment1Task1_IP extends PjWorkshop_IP implements ActionListener
 	protected Label m_lMinShapeRegularity;
 	protected Label m_lMeanShapeRegularity;
 	protected Label m_lstandardDeviationShapeRegularity;
-	
+
 	// Volume components.
 	protected Button m_bComputeVolume;
 	protected Label m_lVolume;
-	
+
 	Assignment1Task1 m_a1t1;
-	
+
 	public Assignment1Task1_IP() {
 		super();
-		if(getClass() == Assignment1Task1_IP.class)
+		if (getClass() == Assignment1Task1_IP.class)
 			init();
 	}
-	
+
 	public void init() {
 		super.init();
 		setTitle("Assignment 1 Task 1");
 	}
-	
+
 	public String getNotice() {
 		return "In this application you are able to compoute genus, volume, shape regularites, and valences of all vertices of the current model.";
 	}
-	
+
 	public void setParent(PsUpdateIf parent) {
 		super.setParent(parent);
 		m_a1t1 = (Assignment1Task1)parent;
-	
+
 		addSubTitle("Click buttons to get corresponding properties of the model.");
-		
+
 		// Genus components.
 		m_bComputeGenus = new Button("Compute genus");
 		m_bComputeGenus.addActionListener(this);
@@ -85,7 +85,7 @@ public class Assignment1Task1_IP extends PjWorkshop_IP implements ActionListener
 		panel1.add(m_bComputeGenus);
 		panel1.add(m_lGenus);
 		add(panel1);
-		
+
 		// Valence components.
 		m_bgetValences = new Button("Get Valences");
 		m_bgetValences.addActionListener(this);
@@ -119,7 +119,7 @@ public class Assignment1Task1_IP extends PjWorkshop_IP implements ActionListener
 		panel2.add(m_bstandardDeviation);
 		panel2.add(m_lstandardDeviation);
 		add(panel2);
-		
+
 		// Shape regularities components.
 		m_bgetShapeRegularites = new Button("Get Shape Regularities");
 		m_bgetShapeRegularites.addActionListener(this);
@@ -149,7 +149,7 @@ public class Assignment1Task1_IP extends PjWorkshop_IP implements ActionListener
 		panel3.add(m_lstandardDeviationShapeRegularity);
 		panel3.add(m_bcolorShapeRegularities);
 		add(panel3);
-		
+
 		// Volume components.
 		m_bComputeVolume = new Button("Compute Volume");
 		m_bComputeVolume.addActionListener(this);
@@ -158,21 +158,21 @@ public class Assignment1Task1_IP extends PjWorkshop_IP implements ActionListener
 		panel4.add(m_bComputeVolume);
 		panel4.add(m_lVolume);
 		add(panel4);
-		
+
 		validate();
 	}
-	
-	
+
+
 	public boolean update(Object event) {
-			return super.update(event);
+		return super.update(event);
 	}
-	
+
 	/**
 	 * Handle action events fired by buttons etc.
 	 */
 	public void actionPerformed(ActionEvent event) {
 		Object source = event.getSource();
-		
+
 		// Genus action.
 		if (source == m_bComputeGenus) {
 			int genus = m_a1t1.computeGenus();
@@ -180,7 +180,7 @@ public class Assignment1Task1_IP extends PjWorkshop_IP implements ActionListener
 			m_a1t1.m_geom.update(m_a1t1.m_geom);
 			return;
 		}
-		
+
 		// Valence action.
 		if (source == m_bgetvalencesVectorSize) {
 			int valencesVectorSize = m_a1t1.getValencesVectorSize();
@@ -207,12 +207,12 @@ public class Assignment1Task1_IP extends PjWorkshop_IP implements ActionListener
 			return;
 		}
 		if (source == m_bstandardDeviation) {
-			double standardDeviation = m_a1t1.getStandardDeviation();
+			double standardDeviation = m_a1t1.getSDofValences();
 			m_lstandardDeviation.setText(Double.toString(standardDeviation));
 			m_a1t1.m_geom.update(m_a1t1.m_geom);
 			return;
 		}
-		
+
 		// Shape regularities action.
 		if (source == m_bgetMaxShapeRegularity) {
 			double[] shapeRegularities = m_a1t1.computeShapeRegularity();
@@ -248,7 +248,7 @@ public class Assignment1Task1_IP extends PjWorkshop_IP implements ActionListener
 			m_a1t1.m_geom.update(m_a1t1.m_geom);
 			return;
 		}
-		
+
 		// Volume action.
 		if (source == m_bComputeVolume) {
 			double volume = m_a1t1.computeVolume();
