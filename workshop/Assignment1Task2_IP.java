@@ -158,7 +158,8 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		
 		if (source == m_bTransformation) {
 			int counter = 0;
-			while(error > 0.1){
+			textAreaOutput.setText("Number of Iteration: calculating ...");
+			while(true){
 			randomVertices = m_a1t2.getRandomVerticesFromP(1000);
 			closestVertices = m_a1t2.findClosestVerticesForSelectedPoints(randomVertices);
 			distances = m_a1t2.getDistances(randomVertices, closestVertices);
@@ -167,20 +168,21 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 			distancesAfterRemove = m_a1t2.removeDistances(distances, median, 1000);
 			randomVerticesAfterRemove = m_a1t2.removeVectors(randomVertices, distancesAfterRemove);
 			closestVerticesAfterRemove = m_a1t2.removeVectors(closestVertices, distancesAfterRemove);
+			error = m_a1t2.calculateError(randomVerticesAfterRemove, closestVerticesAfterRemove);
+			if(error <= 0.1)
+				break;
 			PdMatrix M = m_a1t2.computeCovarianceMatrix(randomVerticesAfterRemove, closestVerticesAfterRemove);
 			SingularValueDecomposition svd = m_a1t2.SVD(M);
 			PdMatrix optimalRotation = m_a1t2.computeOptimalRotation(svd);
 			PdVector optimalTranslation = m_a1t2.computeOptimalTranslation(randomVerticesAfterRemove, closestVerticesAfterRemove, svd, optimalRotation);
 			m_a1t2.rotateP(optimalRotation);
 			m_a1t2.translateP(optimalTranslation);
-			error = m_a1t2.calculateError(randomVerticesAfterRemove, closestVerticesAfterRemove);
 			counter++;
-			textAreaOutput.setText("Number of Iteration: calculating ...");
 			// If you want to keep the surfaces selected, you should keep updateGeomList() commented
 			//updateGeomList();
 			//validate();
 			m_a1t2.m_surfP.update(m_a1t2.m_surfP);
-		}
+			}
 			//PsDebug.message("Number of Iteration: " + Integer.toString(counter));
 		textAreaOutput.setText("Number of Iteration: ");
 		textAreaOutput.append(Integer.toString(counter));
