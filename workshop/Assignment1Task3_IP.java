@@ -50,7 +50,7 @@ public class Assignment1Task3_IP extends Assignment1Task2_IP implements ActionLi
 	 * The text is split at line breaks into individual lines on the dialog.
 	 */
 	public String getNotice() {
-		return "This text should explain what the workshop is about and how to use it.";
+		return "By clicking the \"Transform\" button, you can see the registration of the two selected surfaces.";
 	}
 
 	/** Assign a parent object. */
