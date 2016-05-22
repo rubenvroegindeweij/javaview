@@ -98,7 +98,7 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		pSetSurfaces.add(m_bSetSurfaces, BorderLayout.CENTER);
 		add(pSetSurfaces);
 		
-		m_bTransformation = new Button("Trasnform");
+		m_bTransformation = new Button("Transform");
 		m_bTransformation.addActionListener(this);
 		textAreaOutput = new TextArea("Number of Iteration: ", 5, 40);
 		Panel panel1 = new Panel(new FlowLayout(FlowLayout.CENTER));
