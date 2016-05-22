@@ -131,7 +131,7 @@ public class Assignment1Task1_IP extends PjWorkshop_IP implements ActionListener
 		m_bgetMeanShapeRegularity.addActionListener(this);
 		m_bstandardDeviationShapeRegularity = new Button("Calculate the Standard Deviation");
 		m_bstandardDeviationShapeRegularity.addActionListener(this);
-		m_bcolorShapeRegularities = new Button("Color shape regularities");
+		m_bcolorShapeRegularities = new Button("Color Shape Regularities");
 		m_bcolorShapeRegularities.addActionListener(this);
 		m_lShapeRegularities = new Label("shape regularities");
 		m_lMaxShapeRegularity = new Label("max shape regularities");
