@@ -34,7 +34,7 @@ import Jama.SingularValueDecomposition;
  * Info Panel of Workshop for surface registration
  *
  */
-public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener{
+public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener {
 	protected	List			m_listActive;
 	protected	List			m_listPassive;
 	protected	Vector			m_geomList;
@@ -65,14 +65,14 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 	public String getNotice() {
 		return "By clicking the \"Transform\" button, you can see the registration of the two selected surfaces.";
 	}
-	
+
 	/** Assign a parent object. */
 	public void setParent(PsUpdateIf parent) {
 		super.setParent(parent);
 		m_a1t2 = (Assignment1Task2)parent;
-		
+
 		addSubTitle("Select Surfaces to be Registered");
-		
+
 		Panel pGeometries = new Panel();
 		pGeometries.setLayout(new GridLayout(1, 2));
 
@@ -91,13 +91,13 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		Passive.add(m_listPassive, BorderLayout.CENTER);
 		pGeometries.add(Passive);
 		add(pGeometries);
-		
+
 		Panel pSetSurfaces = new Panel(new BorderLayout());
 		m_bSetSurfaces = new Button("Set selected surfaces");
 		m_bSetSurfaces.addActionListener(this);
 		pSetSurfaces.add(m_bSetSurfaces, BorderLayout.CENTER);
 		add(pSetSurfaces);
-		
+
 		m_bTransformation = new Button("Transform");
 		m_bTransformation.addActionListener(this);
 		textAreaOutput = new TextArea("Number of Iteration: ", 5, 40);
@@ -111,12 +111,12 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		updateGeomList();
 		validate();
 	}
-		
+
 	/** Initialisation */
 	public void init() {
 		super.init();
 		setTitle("Surface Registration");
-		
+
 	}
 
 	/** Set the list of geometries in the lists to the current state of the display. */
@@ -124,11 +124,11 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		Vector displays = m_a1t2.getGeometry().getDisplayList();
 		int numDisplays = displays.size();
 		m_geomList = new Vector();
-		for (int i=0; i<numDisplays; i++) {
-			PvDisplay disp =((PvDisplay)displays.elementAt(i));
+		for (int i = 0; i < numDisplays; i++) {
+			PvDisplay disp = ((PvDisplay)displays.elementAt(i));
 			PgGeometryIf[] geomList = disp.getGeometries();
 			int numGeom = geomList.length;
-			for (int j=0; j<numGeom; j++) {
+			for (int j = 0; j < numGeom; j++) {
 				if (!m_geomList.contains(geomList[j])) {
 					//Take just PgElementSets from the list.
 					if (geomList[j].getType() == PvGeometryIf.GEOM_ELEMENT_SET)
@@ -139,7 +139,7 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		int nog = m_geomList.size();
 		m_listActive.removeAll();
 		m_listPassive.removeAll();
-		for (int i=0; i<nog; i++) {
+		for (int i = 0; i < nog; i++) {
 			String name = ((PgGeometryIf)m_geomList.elementAt(i)).getName();
 			m_listPassive.add(name);
 			m_listActive.add(name);
@@ -152,40 +152,40 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 		Object source = event.getSource();
 		if (source == m_bSetSurfaces) {
 			m_a1t2.setGeometries((PgElementSet)m_geomList.elementAt(m_listActive.getSelectedIndex()),
-			(PgElementSet)m_geomList.elementAt(m_listPassive.getSelectedIndex()));
+			                     (PgElementSet)m_geomList.elementAt(m_listPassive.getSelectedIndex()));
 			return;
 		}
-		
+
 		if (source == m_bTransformation) {
 			int counter = 0;
 			textAreaOutput.setText("Number of Iteration: calculating ...");
-			while(true){
-			randomVertices = m_a1t2.getRandomVerticesFromP(1000);
-			closestVertices = m_a1t2.findClosestVerticesForSelectedPoints(randomVertices);
-			distances = m_a1t2.getDistances(randomVertices, closestVertices);
-			double median = m_a1t2.computeMedianDistanceInS(distances);
-			// set the 3rd parameter to a large number if you do not want to remove any points
-			distancesAfterRemove = m_a1t2.removeDistances(distances, median, 1000);
-			randomVerticesAfterRemove = m_a1t2.removeVectors(randomVertices, distancesAfterRemove);
-			closestVerticesAfterRemove = m_a1t2.removeVectors(closestVertices, distancesAfterRemove);
-			error = m_a1t2.calculateError(randomVerticesAfterRemove, closestVerticesAfterRemove);
-			if(error <= 0.1)
-				break;
-			PdMatrix M = m_a1t2.computeCovarianceMatrix(randomVerticesAfterRemove, closestVerticesAfterRemove);
-			SingularValueDecomposition svd = m_a1t2.SVD(M);
-			PdMatrix optimalRotation = m_a1t2.computeOptimalRotation(svd);
-			PdVector optimalTranslation = m_a1t2.computeOptimalTranslation(randomVerticesAfterRemove, closestVerticesAfterRemove, svd, optimalRotation);
-			m_a1t2.rotateP(optimalRotation);
-			m_a1t2.translateP(optimalTranslation);
-			counter++;
-			// If you want to keep the surfaces selected, you should keep updateGeomList() commented
-			//updateGeomList();
-			//validate();
-			m_a1t2.m_surfP.update(m_a1t2.m_surfP);
+			while (true) {
+				randomVertices = m_a1t2.getRandomVerticesFromP(1000);
+				closestVertices = m_a1t2.findClosestVerticesForSelectedPoints(randomVertices);
+				distances = m_a1t2.getDistances(randomVertices, closestVertices);
+				double median = m_a1t2.computeMedianDistanceInS(distances);
+				// set the 3rd parameter to a large number if you do not want to remove any points
+				distancesAfterRemove = m_a1t2.removeDistances(distances, median, 1000);
+				randomVerticesAfterRemove = m_a1t2.removeVectors(randomVertices, distancesAfterRemove);
+				closestVerticesAfterRemove = m_a1t2.removeVectors(closestVertices, distancesAfterRemove);
+				error = m_a1t2.calculateError(randomVerticesAfterRemove, closestVerticesAfterRemove);
+				if (error <= 0.1)
+					break;
+				PdMatrix M = m_a1t2.computeCovarianceMatrix(randomVerticesAfterRemove, closestVerticesAfterRemove);
+				SingularValueDecomposition svd = m_a1t2.SVD(M);
+				PdMatrix optimalRotation = m_a1t2.computeOptimalRotation(svd);
+				PdVector optimalTranslation = m_a1t2.computeOptimalTranslation(randomVerticesAfterRemove, closestVerticesAfterRemove, svd, optimalRotation);
+				m_a1t2.rotateP(optimalRotation);
+				m_a1t2.translateP(optimalTranslation);
+				counter++;
+				// If you want to keep the surfaces selected, you should keep updateGeomList() commented
+				//updateGeomList();
+				//validate();
+				m_a1t2.m_surfP.update(m_a1t2.m_surfP);
 			}
 			//PsDebug.message("Number of Iteration: " + Integer.toString(counter));
-		textAreaOutput.setText("Number of Iteration: ");
-		textAreaOutput.append(Integer.toString(counter));
+			textAreaOutput.setText("Number of Iteration: ");
+			textAreaOutput.append(Integer.toString(counter));
 			return;
 		}
 

@@ -48,7 +48,7 @@ public class Assignment1Task2 extends PjWorkshop {
 			init();
 		}
 	}
-	
+
 	public Assignment1Task2(String s) {
 		super(s);
 		if (getClass() == Assignment1Task2.class) {
@@ -84,114 +84,113 @@ public class Assignment1Task2 extends PjWorkshop {
 		return minV;
 	}
 
-	public PdVector[] getRandomVerticesFromP(int n){
-		if(n > m_surfP.getNumVertices())
+	public PdVector[] getRandomVerticesFromP(int n) {
+		if (n > m_surfP.getNumVertices())
 			n = m_surfP.getNumVertices();
-		 PdVector[] vertices = m_surfP.getVertices();
-		 PdVector[] randomVertices = new PdVector[n];
-		 for(int i = 0; i < n; i++){
-			 int randomNumber = (int)(Math.random()*(m_surfP.getNumVertices()-1));
-			 randomVertices[i] = vertices[randomNumber];
-		 }
-		 return randomVertices;
+		PdVector[] vertices = m_surfP.getVertices();
+		PdVector[] randomVertices = new PdVector[n];
+		for (int i = 0; i < n; i++) {
+			int randomNumber = (int)(Math.random() * (m_surfP.getNumVertices() - 1));
+			randomVertices[i] = vertices[randomNumber];
+		}
+		return randomVertices;
 	}
 
-	public PdVector[] findClosestVerticesForSelectedPoints(PdVector[] randomVerticesInP){
+	public PdVector[] findClosestVerticesForSelectedPoints(PdVector[] randomVerticesInP) {
 		int m = randomVerticesInP.length;
 		PdVector[] closestVerticesInQ = new PdVector[m];
-		for (int i=0; i<m; i++) {
+		for (int i = 0; i < m; i++) {
 			closestVerticesInQ[i] = searchClosestVerticesInQ(randomVerticesInP[i]);
 		}
 		return closestVerticesInQ;
 	}
 
-	public double computeMedianDistanceInS(double[] distance){
+	public double computeMedianDistanceInS(double[] distance) {
 		Arrays.sort(distance);
-		if(distance.length%2==1){
-			int index = (distance.length+1)/2 - 1;
+		if (distance.length % 2 == 1) {
+			int index = (distance.length + 1) / 2 - 1;
 			return distance[index];
-		}
-		else{
-			int index1 = distance.length/2 - 1;
-			int index2 = index1+1;
-			return (distance[index1]+distance[index2])/2;
+		} else {
+			int index1 = distance.length / 2 - 1;
+			int index2 = index1 + 1;
+			return (distance[index1] + distance[index2]) / 2;
 		}
 	}
-	
-	public double[] getDistances(PdVector[] vInP, PdVector[] vInQ){
+
+	public double[] getDistances(PdVector[] vInP, PdVector[] vInQ) {
 		double[] distances = new double[vInQ.length];
-		for (int i=0; i<vInQ.length; i++){
+		for (int i = 0; i < vInQ.length; i++) {
 			distances[i] = vInP[i].dist(vInQ[i]);
 		}
 		return distances;
 	}
-	
-	public double[] removeDistances(double[] distances, double median, double k){
+
+	public double[] removeDistances(double[] distances, double median, double k) {
 		double threshhold = median * k;
 		double result[] = new double[distances.length];
-		for(int i = 0; i < distances.length; i++){
-			if(distances[i] <= threshhold)
+		for (int i = 0; i < distances.length; i++) {
+			if (distances[i] <= threshhold)
 				result[i] = distances[i];
 			else
 				result[i] = -1d;
 		}
 		return result;
 	}
-	public PdMatrix computeCovarianceMatrix(PdVector[] pointsP, PdVector[] pointsQ){
+	public PdMatrix computeCovarianceMatrix(PdVector[] pointsP, PdVector[] pointsQ) {
 		PdVector pAverage = computeCentroid(pointsP);
 		PdVector qAverage = computeCentroid(pointsQ);
-		 
+
 		PdMatrix m = new PdMatrix(3);
-		
-		for(int i = 0; i < pointsP.length; i++){
+
+		for (int i = 0; i < pointsP.length; i++) {
 
 			PdMatrix m_temp = new PdMatrix();
 			PdVector pTemp = PdVector.subNew(pointsP[i], pAverage);
 			PdVector qTemp = PdVector.subNew(pointsQ[i], qAverage);
 			// Compute pTemp * qTemp^t
 			m_temp.adjoint(pTemp, qTemp);
-			
+
 			m.add(m_temp);
 		}
-		
+
 		// PsDebug.message("Covariance before division: " + m.toString());
-		
-		m.multScalar(1d/((double)pointsP.length));
-		
+
+		m.multScalar(1d / ((double)pointsP.length));
+
 		// PsDebug.message("Divider: " + Double.toString(1d/((double)pointsP.length)));
-		
+
 		// PsDebug.message("Covariance after division: " + m.toString());
 
 		return m;
-		
+
 	}
-	
-	
-	public PdVector[] removeVectors(PdVector[] vectors, double[] distances){
+
+
+	public PdVector[] removeVectors(PdVector[] vectors, double[] distances) {
 		ArrayList<PdVector> vectorsAL = new ArrayList<PdVector>();
-		for(int i = 0; i < distances.length; i++){
-			if(distances[i] != -1d)
+		for (int i = 0; i < distances.length; i++) {
+			if (distances[i] != -1d)
 				vectorsAL.add(vectors[i]);
 		}
 		return vectorsAL.toArray(new PdVector[0]);
 	}
-	
-	public PdVector computeCentroid(PdVector[] vectors){
+
+	public PdVector computeCentroid(PdVector[] vectors) {
 		PdVector result = (PdVector)vectors[0].clone();
-		for(int i =1; i < vectors.length; i++){
+		for (int i = 1; i < vectors.length; i++) {
 			result.add(vectors[i]);
 		}
-		result.multScalar(1/((double)vectors.length));
+		result.multScalar(1 / ((double)vectors.length));
 		return result;
 	}
-	
-	public SingularValueDecomposition SVD(PdMatrix M){
+
+	public SingularValueDecomposition SVD(PdMatrix M) {
 		double[][] m = M.getEntries();
 		Matrix jamaM = new Matrix(m);
 		return jamaM.svd();
 	}
-	
-	public PdMatrix computeOptimalRotation(SingularValueDecomposition svd){
+
+	public PdMatrix computeOptimalRotation(SingularValueDecomposition svd) {
 		Matrix tempMatrix = Matrix.identity(3, 3);
 		Matrix U = svd.getU();
 		Matrix V = svd.getV();
@@ -203,8 +202,8 @@ public class Assignment1Task2 extends PjWorkshop {
 		// PsDebug.message("Optimal Rotation Matrix: " + optimalRotation.toString());
 		return  optimalRotation;
 	}
-	
-	public PdVector computeOptimalTranslation(PdVector[] pointsP, PdVector[] pointsQ, SingularValueDecomposition svd, PdMatrix optimalRotation){
+
+	public PdVector computeOptimalTranslation(PdVector[] pointsP, PdVector[] pointsQ, SingularValueDecomposition svd, PdMatrix optimalRotation) {
 		PdVector pAverage = computeCentroid(pointsP);
 		PdVector qAverage = computeCentroid(pointsQ);
 		// PdMatrix optimalRotation = computeOptimalRotation(svd);
@@ -212,29 +211,29 @@ public class Assignment1Task2 extends PjWorkshop {
 		// PsDebug.message("Optimal Translation Vector: " + optimalTranslation.toString());
 		return optimalTranslation;
 	}
-	
-	public void rotateP(PdMatrix rotation){
+
+	public void rotateP(PdMatrix rotation) {
 		PdVector[] vertices = m_surfP.getVertices();
-		for(int i = 0; i < vertices.length; i++){
+		for (int i = 0; i < vertices.length; i++) {
 			vertices[i].leftMultMatrix(rotation);
 		}
 	}
-	
-	public void translateP(PdVector translation){
+
+	public void translateP(PdVector translation) {
 		PdVector[] vertices = m_surfP.getVertices();
-		for(int i = 0; i < vertices.length; i++){
+		for (int i = 0; i < vertices.length; i++) {
 			vertices[i].add(translation);
 		}
 	}
 
-	public double calculateError(PdVector[] randomVerticesInP, PdVector[] closestVerticesInQ){
+	public double calculateError(PdVector[] randomVerticesInP, PdVector[] closestVerticesInQ) {
 		double errorAll = 0;
-		for(int i = 0; i < randomVerticesInP.length; i++){
+		for (int i = 0; i < randomVerticesInP.length; i++) {
 			double distance = randomVerticesInP[i].dist(closestVerticesInQ[i]);
 			errorAll += distance * distance;
 		}
 		// PsDebug.message("errorAll: " + Double.toString(errorAll));
-		double errorAvg = errorAll/randomVerticesInP.length;
+		double errorAvg = errorAll / randomVerticesInP.length;
 		// PsDebug.message("errorAvg: " + Double.toString(errorAvg));
 		return errorAvg;
 	}

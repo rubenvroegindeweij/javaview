@@ -34,9 +34,9 @@ import Jama.SingularValueDecomposition;
  * Info Panel of Workshop for surface registration
  *
  */
-public class Assignment1Task3_IP extends Assignment1Task2_IP implements ActionListener{
+public class Assignment1Task3_IP extends Assignment1Task2_IP implements ActionListener {
 	protected Assignment1Task3 m_a1t3;
-	
+
 	/** Constructor */
 	public Assignment1Task3_IP () {
 		super();
@@ -52,23 +52,21 @@ public class Assignment1Task3_IP extends Assignment1Task2_IP implements ActionLi
 	public String getNotice() {
 		return "This text should explain what the workshop is about and how to use it.";
 	}
-	
+
 	/** Assign a parent object. */
 	public void setParent(PsUpdateIf parent) {
 		super.setParent(parent);
 		m_a1t3 = (Assignment1Task3)parent;
-		
-		addSubTitle("Select Surfaces to be Registered");
-
+		// addSubTitle("Select Surfaces to be Registered");
 		updateGeomList();
 		validate();
 	}
-		
+
 	/** Initialisation */
 	public void init() {
 		super.init();
 		setTitle("Surface Registration");
-		
+
 	}
 
 	/**
@@ -77,10 +75,10 @@ public class Assignment1Task3_IP extends Assignment1Task2_IP implements ActionLi
 	public void actionPerformed(ActionEvent event) {
 		super.actionPerformed(event);
 		Object source = event.getSource();
-		
+
 
 	}
-	
+
 	/**
 	 * Get information which bottom buttons a dialog should create
 	 * when showing this info panel.

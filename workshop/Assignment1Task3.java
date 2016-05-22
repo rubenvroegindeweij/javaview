@@ -47,10 +47,10 @@ public class Assignment1Task3 extends Assignment1Task2 {
 	public void init() {
 		super.init();
 	}
-	
+
 	//http://www.9math.com/book/projection-point-plane
 	//https://en.wikipedia.org/wiki/Plane_(geometry)
-	public PdVector projectPointOnPlane(PdVector vertexP, PdVector vertexQ, PdVector normalQ){
+	public PdVector projectPointOnPlane(PdVector vertexP, PdVector vertexQ, PdVector normalQ) {
 		double xQ = vertexQ.m_data[0];
 		double yQ = vertexQ.m_data[1];
 		double zQ = vertexQ.m_data[2];
@@ -58,18 +58,18 @@ public class Assignment1Task3 extends Assignment1Task2 {
 		double a = normalQ.m_data[0];
 		double b = normalQ.m_data[1];
 		double c = normalQ.m_data[2];
-		double d = -(a*xQ+b*yQ+c*zQ);
+		double d = -(a * xQ + b * yQ + c * zQ);
 		// Projection of a point on a plane.
 		double xP = vertexQ.m_data[0];
 		double yP = vertexQ.m_data[1];
 		double zP = vertexQ.m_data[2];
-		double multiplier = (a*xP+b*yP+c*zP+d)/(a*a+b*b+c*c);
+		double multiplier = (a * xP + b * yP + c * zP + d) / (a * a + b * b + c * c);
 		double x = xP - a * multiplier;
 		double y = yP - b * multiplier;
 		double z = zP - c * multiplier;
-		return new PdVector(x, y ,z);
+		return new PdVector(x, y , z);
 	}
-	
+
 	public PdVector searchClosestVerticesInQ(PdVector point) {
 		PdVector[] pointsQ = m_surfQ.getVertices();
 		PdVector[] normalsQ = m_surfQ.getVertexNormals();

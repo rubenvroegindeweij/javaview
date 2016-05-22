@@ -57,8 +57,8 @@ public class Assignment1Task1 extends PjWorkshop {
 		return m_geom.getVertexValence(m_geom).min();
 	}
 
-	public int getValencesSum() {
-		int[] valences = getValences();
+	public int getValencesSum(int [] valences) {
+		// int[] valences = getValences();
 		int valencesSum = 0;
 		for (int j = 0; j < valences.length; j++) {
 			valencesSum += valences[j];
@@ -68,20 +68,20 @@ public class Assignment1Task1 extends PjWorkshop {
 
 	public double getMeanValences() {
 		int[] valences = getValences();
-		int valencesSum = getValencesSum();
-		double valencesMean = valencesSum / valences.length;
+		int valencesSum = getValencesSum(valences);
+		double valencesMean = valencesSum / (double) valences.length;
 		return valencesMean;
 	}
 
 	public double getSDofValences() {
 		int[] valences = getValences();
-		int valencesSum = getValencesSum();
-		double valencesMean = valencesSum / valences.length;
+		int valencesSum = getValencesSum(valences);
+		double valencesMean = valencesSum / (double) valences.length;
 		int sumValencesSquare = 0;
 		for (int k = 0; k < valences.length; k++) {
 			sumValencesSquare += Math.pow(valences[k], 2);
 		}
-		double standardDeviation = Math.sqrt(sumValencesSquare / valences.length - Math.pow(valencesMean, 2));
+		double standardDeviation = Math.sqrt(sumValencesSquare / (double) valences.length - Math.pow(valencesMean, 2));
 		return standardDeviation;
 	}
 

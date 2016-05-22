@@ -17,8 +17,8 @@ import workshop.*;
 public class PgElementSet_Menu extends PgPointSet_Menu {
 	
 	private enum MenuEntry{
-		MyWorkshop			("MyWorkshop..."),
-		Registration		("Surface Registration..."),
+		// MyWorkshop			("MyWorkshop..."),
+		// Registration		("Surface Registration..."),
 		Assignment1Task1	("Assignment1Task1..."),
 		Assignment1Task2	("Assignment1Task2..."),
 		Assignment1Task3	("Assignment1Task3...")
@@ -68,6 +68,7 @@ public class PgElementSet_Menu extends PgPointSet_Menu {
 		MenuEntry entry = MenuEntry.fromName(aMethod);
 		if(entry == null) return false;
 		switch (entry) {
+			/*
 		case MyWorkshop:
 			MyWorkshop ws = new MyWorkshop();
 			ws.setGeometry(m_elementSet);
@@ -92,6 +93,7 @@ public class PgElementSet_Menu extends PgPointSet_Menu {
 			dialog.update(reg);
 			dialog.setVisible(true);
 			break;
+			*/
 		case Assignment1Task1:
 			Assignment1Task1 a1t1 = new Assignment1Task1();
 			a1t1.setGeometry(m_elementSet);
