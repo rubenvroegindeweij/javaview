@@ -49,6 +49,10 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 	protected	Button			m_bTransformation;
 	protected	TextArea		textAreaOutput;
 	protected	double			error = Double.MAX_VALUE;
+	
+	protected int NUMBER_OF_POINTS_TO_SELECT = 100;
+	protected double MAX_ERROR = 0.01d;
+	protected int K_FOR_MEDIAN_DISTANCE = 4;
 
 	/** Constructor */
 	public Assignment1Task2_IP () {
@@ -100,7 +104,8 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 
 		m_bTransformation = new Button("Transform");
 		m_bTransformation.addActionListener(this);
-		textAreaOutput = new TextArea("Number of Iteration: ", 5, 40);
+		textAreaOutput = new TextArea("", 5, 40);
+		textAreaOutput.setEditable(false);
 		Panel panel1 = new Panel(new FlowLayout(FlowLayout.CENTER));
 		panel1.add(m_bTransformation);
 		add(panel1);
@@ -158,18 +163,19 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 
 		if (source == m_bTransformation) {
 			int counter = 0;
-			textAreaOutput.setText("Number of Iteration: calculating ...");
+			textAreaOutput.setText("Calculating ...");
+			double beginTime = System.currentTimeMillis();
 			while (true) {
-				randomVertices = m_a1t2.getRandomVerticesFromP(1000);
+				randomVertices = m_a1t2.getRandomVerticesFromP(NUMBER_OF_POINTS_TO_SELECT);
 				closestVertices = m_a1t2.findClosestVerticesForSelectedPoints(randomVertices);
 				distances = m_a1t2.getDistances(randomVertices, closestVertices);
 				double median = m_a1t2.computeMedianDistanceInS(distances);
 				// set the 3rd parameter to a large number if you do not want to remove any points
-				distancesAfterRemove = m_a1t2.removeDistances(distances, median, 1000);
+				distancesAfterRemove = m_a1t2.removeDistances(distances, median, K_FOR_MEDIAN_DISTANCE);
 				randomVerticesAfterRemove = m_a1t2.removeVectors(randomVertices, distancesAfterRemove);
 				closestVerticesAfterRemove = m_a1t2.removeVectors(closestVertices, distancesAfterRemove);
 				error = m_a1t2.calculateError(randomVerticesAfterRemove, closestVerticesAfterRemove);
-				if (error <= 0.1)
+				if (error <= MAX_ERROR)
 					break;
 				PdMatrix M = m_a1t2.computeCovarianceMatrix(randomVerticesAfterRemove, closestVerticesAfterRemove);
 				SingularValueDecomposition svd = m_a1t2.SVD(M);
@@ -183,9 +189,12 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 				//validate();
 				m_a1t2.m_surfP.update(m_a1t2.m_surfP);
 			}
+			double endTime = System.currentTimeMillis();
+			double duration = endTime - beginTime;
 			//PsDebug.message("Number of Iteration: " + Integer.toString(counter));
-			textAreaOutput.setText("Number of Iteration: ");
+			textAreaOutput.setText("Number of Iteration: \t");
 			textAreaOutput.append(Integer.toString(counter));
+			textAreaOutput.append("\nRun time (s): \t" + Double.toString(duration/1000d));
 			return;
 		}
 
