@@ -115,7 +115,7 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 	/** Initialisation */
 	public void init() {
 		super.init();
-		setTitle("Surface Registration");
+		setTitle("Assignment 1 Task 2");
 
 	}
 

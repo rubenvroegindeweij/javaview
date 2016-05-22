@@ -65,7 +65,7 @@ public class Assignment1Task3_IP extends Assignment1Task2_IP implements ActionLi
 	/** Initialisation */
 	public void init() {
 		super.init();
-		setTitle("Surface Registration");
+		setTitle("Assignment 1 Task 3");
 
 	}
 
