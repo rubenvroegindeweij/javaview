@@ -53,6 +53,7 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 	protected int NUMBER_OF_POINTS_TO_SELECT = 100;
 	protected double MAX_ERROR = 0.05d;
 	protected int K_FOR_MEDIAN_DISTANCE = 4;
+	protected int MAX_AMOUNT_OF_ITERATIONS = 200;
 
 	/** Constructor */
 	public Assignment1Task2_IP () {
@@ -188,7 +189,7 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 				//updateGeomList();
 				//validate();
 				m_a1t2.m_surfP.update(m_a1t2.m_surfP);
-				if (counter >= 200)
+				if(counter >= MAX_AMOUNT_OF_ITERATIONS)
 					break;
 			}
 			double endTime = System.currentTimeMillis();
