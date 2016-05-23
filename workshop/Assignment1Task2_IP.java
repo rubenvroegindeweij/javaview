@@ -49,7 +49,7 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 	protected	Button			m_bTransformation;
 	protected	TextArea		textAreaOutput;
 	protected	double			error = Double.MAX_VALUE;
-	
+
 	protected int NUMBER_OF_POINTS_TO_SELECT = 100;
 	protected double MAX_ERROR = 0.05d;
 	protected int K_FOR_MEDIAN_DISTANCE = 4;
@@ -188,7 +188,7 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 				//updateGeomList();
 				//validate();
 				m_a1t2.m_surfP.update(m_a1t2.m_surfP);
-				if(counter >= 200)
+				if (counter >= 200)
 					break;
 			}
 			double endTime = System.currentTimeMillis();
@@ -196,7 +196,7 @@ public class Assignment1Task2_IP extends PjWorkshop_IP implements ActionListener
 			//PsDebug.message("Number of Iteration: " + Integer.toString(counter));
 			textAreaOutput.setText("Number of Iteration: \t");
 			textAreaOutput.append(Integer.toString(counter));
-			textAreaOutput.append("\nRun time (s): \t" + Double.toString(duration/1000d));
+			textAreaOutput.append("\nRun time (s): \t" + Double.toString(duration / 1000d));
 			textAreaOutput.append("\nFinal error: \t" + Double.toString(error));
 			return;
 		}
