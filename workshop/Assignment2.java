@@ -32,4 +32,41 @@ public class Assignment2 extends PjWorkshop {
 	public void init() {
 		super.init();
 	}
+	
+	public PdMatrix getGradientMatrix(){
+		
+		
+		PiVector[] elements = m_geom.getElements();
+		int sizeElements = m_geom.getNumElements();
+		
+		int numOfVertices = m_geom.getNumVertices();
+		
+		PdMatrix gradientMatrix = new PdMatrix((sizeElements*3), numOfVertices);
+		
+		for(int i = 0; i< elements.length;i++){
+			
+			PdMatrix temp = getGradientMatrix(elements[i]);
+			
+			for(int j = 0; j<3;j++){
+				
+				PdVector tempColumn  = temp.getColumn(j);
+				
+				int startPos = (i*3);
+				
+				double x = tempColumn.getEntry(0);
+				double y = tempColumn.getEntry(1);
+				double z = tempColumn.getEntry(2);
+				
+				int currentVertexIndex = elements[i].getEntry(j);
+				
+				gradientMatrix.setEntry(startPos,currentVertexIndex,x);
+				gradientMatrix.setEntry(startPos+1,currentVertexIndex,y);
+				gradientMatrix.setEntry(startPos+2,currentVertexIndex,z);
+				
+			}
+						
+		}
+		return gradientMatrix;
+		
+	}
 }
