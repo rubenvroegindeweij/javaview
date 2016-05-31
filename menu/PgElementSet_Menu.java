@@ -133,11 +133,11 @@ public class PgElementSet_Menu extends PgPointSet_Menu {
 			break;
 		case Assignment2:
 			Assignment2 a2 = new Assignment2();
-			a1t4.setGeometry(m_elementSet);
+			a2.setGeometry(m_elementSet);
 			if (currDisp == null) {
 				if (PsDebug.WARNING) PsDebug.warning("missing display.");
 			} else
-				a1t4.setDisplay(currDisp);
+				a2.setDisplay(currDisp);
 			dialog = new PjWorkshop_Dialog(false);
 			dialog.setParent(a2);
 			dialog.update(a2);
