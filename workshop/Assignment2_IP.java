@@ -19,8 +19,10 @@ import jv.object.PsDebug;
 
 public class Assignment2_IP extends PjWorkshop_IP implements ActionListener {
 
+	protected   Button			m_bGetGradientMatrix;
+	
 	Assignment2 m_a2;
-
+	
 	public Assignment2_IP() {
 		super();
 		if (getClass() == Assignment2_IP.class)
@@ -42,6 +44,12 @@ public class Assignment2_IP extends PjWorkshop_IP implements ActionListener {
 
 		addSubTitle("Click buttons to get corresponding properties of the model.");
 
+		m_bGetGradientMatrix = new Button("Get Gradient Matrix");
+		m_bGetGradientMatrix.addActionListener(this);
+		Panel panel1 = new Panel(new FlowLayout(FlowLayout.CENTER));
+		panel1.add(m_bGetGradientMatrix);
+		add(panel1);
+		
 		validate();
 	}
 
@@ -55,6 +63,11 @@ public class Assignment2_IP extends PjWorkshop_IP implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent event) {
 		Object source = event.getSource();
+		
+		if (source == m_bGetGradientMatrix) {
+			PdMatrix gradientMatrix = m_a2.getGradientMatrix();
+			PsDebug.message("Gradient Matrix: " + gradientMatrix.toString());
+		}
 
 	}
 	/**
