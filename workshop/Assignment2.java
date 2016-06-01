@@ -51,11 +51,12 @@ public class Assignment2 extends PjWorkshop {
 	//	PdMatrix gradientMatrix = new PdMatrix((sizeElements*3), numOfVertices);
 		
 		gradientMatrix = new PnSparseMatrix((sizeElements*3),numOfVertices,3);
+		Mv = new PnSparseMatrix((sizeElements*3),(sizeElements*3),1);
 		modifiedGradientMatrices = new ArrayList<PdMatrix>();
 		
 		for(int i = 0; i< elements.length;i++){
 			
-			PdMatrix temp = getGradientMatrix(elements[i], A);
+			PdMatrix temp = getGradientMatrix(elements[i], A, i);
 			
 			for(int j = 0; j<3;j++){
 				
@@ -78,7 +79,7 @@ public class Assignment2 extends PjWorkshop {
 		return gradientMatrix;
 }
 
-	public PdMatrix getGradientMatrix(PiVector triangle, PdMatrix A){
+	public PdMatrix getGradientMatrix(PiVector triangle, PdMatrix A, int currentTriangleIndex){
 		PdVector p1 = m_geom.getVertex(triangle.getEntry(0));
 		PdVector p2 = m_geom.getVertex(triangle.getEntry(1));
 		PdVector p3 = m_geom.getVertex(triangle.getEntry(2));
@@ -99,6 +100,12 @@ public class Assignment2 extends PjWorkshop {
 		PdVector e3 = PdVector.subNew(p2, p1);
 
 		double area = PdVector.crossNew(v, w).length()/2;
+		
+		int startMv = (currentTriangleIndex*3);
+		Mv.addEntry(startMv,startMv,area);
+		Mv.addEntry(startMv+1,startMv+1,area);
+		Mv.addEntry(startMv+2,startMv+2,area);
+		
 
 		PdMatrix gradientMatrix = new PdMatrix(3);
 		gradientMatrix.setColumn(0, PdVector.crossNew(n, e1));
