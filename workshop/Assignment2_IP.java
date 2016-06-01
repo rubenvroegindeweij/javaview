@@ -15,6 +15,7 @@ import jv.object.PsDialog;
 import jv.object.PsUpdateIf;
 import jvx.project.PjWorkshop_IP;
 import jv.vecmath.PdMatrix;
+import jvx.numeric.PnSparseMatrix;
 
 import jv.object.PsDebug;
 
@@ -66,7 +67,7 @@ public class Assignment2_IP extends PjWorkshop_IP implements ActionListener {
 		Object source = event.getSource();
 		
 		if (source == m_bGetGradientMatrix) {
-			PdMatrix gradientMatrix = m_a2.getGradientMatrix();
+			PnSparseMatrix gradientMatrix = m_a2.getGradientMatrix();
 			PsDebug.message("Gradient Matrix: " + gradientMatrix.toString());
 		}
 

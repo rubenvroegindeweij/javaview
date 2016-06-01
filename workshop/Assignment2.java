@@ -12,6 +12,7 @@ import jvx.project.PjWorkshop;
 import jv.vecmath.PdMatrix;
 
 import jv.object.PsDebug;
+import jvx.numeric.PnSparseMatrix;
 
 public class Assignment2 extends PjWorkshop {
 
@@ -34,7 +35,7 @@ public class Assignment2 extends PjWorkshop {
 		super.init();
 	}
 	
-	public PdMatrix getGradientMatrix(){
+	public PnSparseMatrix getGradientMatrix(){
 		
 		
 		PiVector[] elements = m_geom.getElements();
@@ -42,7 +43,9 @@ public class Assignment2 extends PjWorkshop {
 		
 		int numOfVertices = m_geom.getNumVertices();
 		
-		PdMatrix gradientMatrix = new PdMatrix((sizeElements*3), numOfVertices);
+	//	PdMatrix gradientMatrix = new PdMatrix((sizeElements*3), numOfVertices);
+		
+		PnSparseMatrix gradientMatrix = new PnSparseMatrix((sizeElements*3),numOfVertices,3);
 		
 		for(int i = 0; i< elements.length;i++){
 			
@@ -60,9 +63,9 @@ public class Assignment2 extends PjWorkshop {
 				
 				int currentVertexIndex = elements[i].getEntry(j);
 				
-				gradientMatrix.setEntry(startPos,currentVertexIndex,x);
-				gradientMatrix.setEntry(startPos+1,currentVertexIndex,y);
-				gradientMatrix.setEntry(startPos+2,currentVertexIndex,z);
+				gradientMatrix.addEntry(startPos,currentVertexIndex,x);
+				gradientMatrix.addEntry(startPos+1,currentVertexIndex,y);
+				gradientMatrix.addEntry(startPos+2,currentVertexIndex,z);
 				
 			}
 						
