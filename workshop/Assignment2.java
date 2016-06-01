@@ -124,6 +124,18 @@ public class Assignment2 extends PjWorkshop {
 	}
 	
 	public void setModifiedVectors(){
-		
+		for(int i = 0; i < modifiedGradientMatrices.size(); i++){
+			PdMatrix modiefiedGradientMatrix = modifiedGradientMatrices.get(i);
+			int currentMatrixIndex = i*3;
+			xModifiedGradients.setEntry(currentMatrixIndex, modiefiedGradientMatrix.getEntry(0, 0));
+			xModifiedGradients.setEntry(currentMatrixIndex+1, modiefiedGradientMatrix.getEntry(0, 1));
+			xModifiedGradients.setEntry(currentMatrixIndex+2, modiefiedGradientMatrix.getEntry(0, 2));
+			yModifiedGradients.setEntry(currentMatrixIndex, modiefiedGradientMatrix.getEntry(1, 0));
+			yModifiedGradients.setEntry(currentMatrixIndex+1, modiefiedGradientMatrix.getEntry(1, 1));
+			yModifiedGradients.setEntry(currentMatrixIndex+2, modiefiedGradientMatrix.getEntry(1, 2));
+			zModifiedGradients.setEntry(currentMatrixIndex, modiefiedGradientMatrix.getEntry(2, 0));
+			zModifiedGradients.setEntry(currentMatrixIndex+1, modiefiedGradientMatrix.getEntry(2, 1));
+			zModifiedGradients.setEntry(currentMatrixIndex+2, modiefiedGradientMatrix.getEntry(2, 2));
+		}
 	}
 }
