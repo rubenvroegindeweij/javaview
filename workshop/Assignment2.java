@@ -13,11 +13,18 @@ import jv.vecmath.PdMatrix;
 
 import jv.object.PsDebug;
 import jvx.numeric.PnSparseMatrix;
+import java.util.ArrayList;
 
 public class Assignment2 extends PjWorkshop {
 
 	PgElementSet m_geom;
 	PgElementSet m_geomSave;
+	PnSparseMatrix gradientMatrix;
+	ArrayList<PdMatrix> modifiedGradientMatrices;
+	PdVector xModifiedGradients;
+	PdVector yModifiedGradients;
+	PdVector zModifiedGradients;
+	PnSparseMatrix Mv;
 
 	public Assignment2() {
 		super("Assignment 2");
@@ -35,9 +42,7 @@ public class Assignment2 extends PjWorkshop {
 		super.init();
 	}
 	
-	public PnSparseMatrix getGradientMatrix(){
-		
-		
+	public PnSparseMatrix getGradientMatrix(PdMatrix A){
 		PiVector[] elements = m_geom.getElements();
 		int sizeElements = m_geom.getNumElements();
 		
@@ -45,11 +50,12 @@ public class Assignment2 extends PjWorkshop {
 		
 	//	PdMatrix gradientMatrix = new PdMatrix((sizeElements*3), numOfVertices);
 		
-		PnSparseMatrix gradientMatrix = new PnSparseMatrix((sizeElements*3),numOfVertices,3);
+		gradientMatrix = new PnSparseMatrix((sizeElements*3),numOfVertices,3);
+		modifiedGradientMatrices = new ArrayList<PdMatrix>();
 		
 		for(int i = 0; i< elements.length;i++){
 			
-			PdMatrix temp = getGradientMatrix(elements[i]);
+			PdMatrix temp = getGradientMatrix(elements[i], A);
 			
 			for(int j = 0; j<3;j++){
 				
@@ -65,15 +71,14 @@ public class Assignment2 extends PjWorkshop {
 				
 				gradientMatrix.addEntry(startPos,currentVertexIndex,x);
 				gradientMatrix.addEntry(startPos+1,currentVertexIndex,y);
-				gradientMatrix.addEntry(startPos+2,currentVertexIndex,z);
-				
+				gradientMatrix.addEntry(startPos+2,currentVertexIndex,z);	
 			}
 						
 		}
 		return gradientMatrix;
 }
 
-	public PdMatrix getGradientMatrix(PiVector triangle){
+	public PdMatrix getGradientMatrix(PiVector triangle, PdMatrix A){
 		PdVector p1 = m_geom.getVertex(triangle.getEntry(0));
 		PdVector p2 = m_geom.getVertex(triangle.getEntry(1));
 		PdVector p3 = m_geom.getVertex(triangle.getEntry(2));
@@ -101,6 +106,17 @@ public class Assignment2 extends PjWorkshop {
 		gradientMatrix.setColumn(2, PdVector.crossNew(n, e3));
 		gradientMatrix.multScalar(1d/(2*area));
 		
+		// Saves the small modified gradient matrices.
+		PdMatrix modiefiedGradientMatrix = PdMatrix.copyNew(gradientMatrix);
+		modiefiedGradientMatrix.leftMult(A);
+		modifiedGradientMatrices.add(modiefiedGradientMatrix);
+		
+		// Filles the Mv matrix with area values.
+		
 		return gradientMatrix;
+	}
+	
+	public void setModifiedVectors(){
+		
 	}
 }

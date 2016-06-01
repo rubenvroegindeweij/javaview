@@ -24,7 +24,7 @@ public class Assignment2_IP extends PjWorkshop_IP implements ActionListener {
 
 	protected   Button			m_bGetGradientMatrix;
 	protected	TextField		tf1, tf2, tf3, tf4, tf5, tf6, tf7, tf8, tf9;
-	protected	double			a1, a2, a3, a4, a5, a6, a7, a8, a9;
+	protected	PdMatrix		A;
 	
 	Assignment2 m_a2;
 	
@@ -99,7 +99,7 @@ public class Assignment2_IP extends PjWorkshop_IP implements ActionListener {
 		
 		if (source == m_bGetGradientMatrix) {
 			getInputMatrixA();
-			PnSparseMatrix gradientMatrix = m_a2.getGradientMatrix();
+			PnSparseMatrix gradientMatrix = m_a2.getGradientMatrix(A);
 			PsDebug.message("Gradient Matrix: " + gradientMatrix.toString());
 		}
 
@@ -113,14 +113,20 @@ public class Assignment2_IP extends PjWorkshop_IP implements ActionListener {
 	}
 	
 	public void getInputMatrixA(){
-		a1 = new Double(tf1.getText());
-		a2 = new Double(tf2.getText());
-		a3 = new Double(tf3.getText());
-		a4 = new Double(tf4.getText());
-		a5 = new Double(tf5.getText());
-		a6 = new Double(tf6.getText());
-		a7 = new Double(tf7.getText());
-		a8 = new Double(tf8.getText());
-		a9 = new Double(tf9.getText());
+		double a1 = new Double(tf1.getText());
+		double a2 = new Double(tf2.getText());
+		double a3 = new Double(tf3.getText());
+		double a4 = new Double(tf4.getText());
+		double a5 = new Double(tf5.getText());
+		double a6 = new Double(tf6.getText());
+		double a7 = new Double(tf7.getText());
+		double a8 = new Double(tf8.getText());
+		double a9 = new Double(tf9.getText());
+		double[][] Atemp = {
+						  {a1,a2,a3},
+						  {a4,a5,a6},
+						  {a7,a8,a9}
+						  };
+		A = new PdMatrix(Atemp);
 	}
 }
