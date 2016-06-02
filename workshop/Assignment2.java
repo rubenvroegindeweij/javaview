@@ -15,6 +15,10 @@ import jv.object.PsDebug;
 import jvx.numeric.PnSparseMatrix;
 import java.util.ArrayList;
 
+import dev6.numeric.PnMumpsSolver;
+import jvx.numeric.PnSparseMatrix;
+import jv.object.PsObject;
+
 public class Assignment2 extends PjWorkshop {
 
 	PgElementSet m_geom;
@@ -25,6 +29,9 @@ public class Assignment2 extends PjWorkshop {
 	PdVector yModifiedGradients;
 	PdVector zModifiedGradients;
 	PnSparseMatrix Mv;
+	PdVector xSolved;
+	PdVector ySolved;
+	PdVector zSolved;
 
 	public Assignment2() {
 		super("Assignment 2");
@@ -99,31 +106,35 @@ public class Assignment2 extends PjWorkshop {
 		PdVector e2 = PdVector.subNew(p1, p3);
 		PdVector e3 = PdVector.subNew(p2, p1);
 
-		double area = PdVector.crossNew(v, w).length()/2;
+		double area = PdVector.crossNew(v, w).length()/2;		
+
+		PdMatrix triangleGradientMatrix = new PdMatrix(3);
+		triangleGradientMatrix.setColumn(0, PdVector.crossNew(n, e1));
+		triangleGradientMatrix.setColumn(1, PdVector.crossNew(n, e2));
+		triangleGradientMatrix.setColumn(2, PdVector.crossNew(n, e3));
+		triangleGradientMatrix.multScalar(1d/(2*area));
 		
+		// Saves the small modified gradient matrices.
+		PiVector element = m_geom.getElement(currentTriangleIndex);
+		PdMatrix modiefiedGradientMatrix = PdMatrix.copyNew(triangleGradientMatrix);
+		if(element.hasTag(PsObject.IS_SELECTED))
+			modiefiedGradientMatrix.leftMult(A);
+		modifiedGradientMatrices.add(modiefiedGradientMatrix);
+		
+		// Filles the Mv matrix with area values.
 		int startMv = (currentTriangleIndex*3);
 		Mv.addEntry(startMv,startMv,area);
 		Mv.addEntry(startMv+1,startMv+1,area);
 		Mv.addEntry(startMv+2,startMv+2,area);
 		
-
-		PdMatrix gradientMatrix = new PdMatrix(3);
-		gradientMatrix.setColumn(0, PdVector.crossNew(n, e1));
-		gradientMatrix.setColumn(1, PdVector.crossNew(n, e2));
-		gradientMatrix.setColumn(2, PdVector.crossNew(n, e3));
-		gradientMatrix.multScalar(1d/(2*area));
-		
-		// Saves the small modified gradient matrices.
-		PdMatrix modiefiedGradientMatrix = PdMatrix.copyNew(gradientMatrix);
-		modiefiedGradientMatrix.leftMult(A);
-		modifiedGradientMatrices.add(modiefiedGradientMatrix);
-		
-		// Filles the Mv matrix with area values.
-		
-		return gradientMatrix;
+		return triangleGradientMatrix;
 	}
 	
 	public void setModifiedVectors(){
+		int n = m_geom.getNumVertices();
+		xModifiedGradients = new PdVector(n);
+		yModifiedGradients = new PdVector(n);
+		zModifiedGradients = new PdVector(n);
 		for(int i = 0; i < modifiedGradientMatrices.size(); i++){
 			PdMatrix modiefiedGradientMatrix = modifiedGradientMatrices.get(i);
 			int currentMatrixIndex = i*3;
@@ -137,5 +148,40 @@ public class Assignment2 extends PjWorkshop {
 			zModifiedGradients.setEntry(currentMatrixIndex+1, modiefiedGradientMatrix.getEntry(2, 1));
 			zModifiedGradients.setEntry(currentMatrixIndex+2, modiefiedGradientMatrix.getEntry(2, 2));
 		}
+	}
+	
+	public void changeVertices(){
+		for(int i = 0; i < xSolved.getSize(); i++){
+			m_geom.setVertex(i, xSolved.getEntry(i), ySolved.getEntry(i), zSolved.getEntry(i));
+		}
+	}
+	
+	public void editMesh(PdMatrix A) throws Exception{
+		getGradientMatrix(A);
+		setModifiedVectors();
+		PnSparseMatrix GTMv = PnSparseMatrix.multMatrices(gradientMatrix.transposeNew(), Mv, new PnSparseMatrix());
+		PnSparseMatrix S = PnSparseMatrix.multMatrices(GTMv, gradientMatrix, new PnSparseMatrix());
+		PdVector bx = PnSparseMatrix.rightMultVector(GTMv, xModifiedGradients, new PdVector());
+		PdVector by = PnSparseMatrix.rightMultVector(GTMv, yModifiedGradients, new PdVector());
+		PdVector bz = PnSparseMatrix.rightMultVector(GTMv, zModifiedGradients, new PdVector());
+		int n = m_geom.getNumVertices();
+		xSolved = new PdVector(n);
+		ySolved = new PdVector(n);
+		zSolved = new PdVector(n);
+		long factorization = PnMumpsSolver.factor(S, PnMumpsSolver.Type.GENERAL_SYMMETRIC);
+		PnMumpsSolver.solve(factorization, xSolved, bx);
+		PnMumpsSolver.solve(factorization, ySolved, by);
+		PnMumpsSolver.solve(factorization, zSolved, bz);
+		changeVertices();
+		PsDebug.message("G: " + gradientMatrix.toString());
+		PsDebug.message("GT: " + gradientMatrix.transposeNew().toString());
+		PsDebug.message("Mv: " + Mv.toString());
+		PsDebug.message("S: " + S.toString());
+		PsDebug.message("xModifiedGradients: " + xModifiedGradients.toString());
+		PsDebug.message("bx: " + bx.toString());
+		PsDebug.message("GTMv: " + GTMv.toString());
+		PsDebug.message("factorization: " + factorization);
+		PsDebug.message("bx: " + bx.toString());
+		PsDebug.message("xSolved: " + xSolved.toString());
 	}
 }

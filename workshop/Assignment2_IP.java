@@ -99,8 +99,14 @@ public class Assignment2_IP extends PjWorkshop_IP implements ActionListener {
 		
 		if (source == m_bGetGradientMatrix) {
 			getInputMatrixA();
-			PnSparseMatrix gradientMatrix = m_a2.getGradientMatrix(A);
-			PsDebug.message("Gradient Matrix: " + gradientMatrix.toString());
+			try{
+				m_a2.editMesh(A);
+			}
+			catch(Exception e){
+				PsDebug.message("EXCEPTION: " + e.toString());
+			}
+			m_a2.m_geom.update(m_a2.m_geom);
+			//PsDebug.message("Gradient Matrix: " + gradientMatrix.toString());
 		}
 
 	}
