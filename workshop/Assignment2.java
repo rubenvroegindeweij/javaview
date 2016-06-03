@@ -25,13 +25,17 @@ public class Assignment2 extends PjWorkshop {
 	PgElementSet m_geomSave;
 	PnSparseMatrix gradientMatrix;
 	ArrayList<PdMatrix> modifiedGradientMatrices;
-	PdVector xModifiedGradients;
-	PdVector yModifiedGradients;
-	PdVector zModifiedGradients;
+	PdVector xGradientTilda;
+	PdVector yGradientTilda;
+	PdVector zGradientTilda;
+	PdVector x;
+	PdVector y;
+	PdVector z;
 	PnSparseMatrix Mv;
 	PdVector xSolved;
 	PdVector ySolved;
 	PdVector zSolved;
+	PdMatrix A;
 
 	public Assignment2() {
 		super("Assignment 2");
@@ -130,23 +134,44 @@ public class Assignment2 extends PjWorkshop {
 		return triangleGradientMatrix;
 	}
 	
-	public void setModifiedVectors(){
+	public void contstructGTilda(){
 		int n = m_geom.getNumVertices();
-		xModifiedGradients = new PdVector(n);
-		yModifiedGradients = new PdVector(n);
-		zModifiedGradients = new PdVector(n);
-		for(int i = 0; i < modifiedGradientMatrices.size(); i++){
-			PdMatrix modiefiedGradientMatrix = modifiedGradientMatrices.get(i);
-			int currentMatrixIndex = i*3;
-			xModifiedGradients.setEntry(currentMatrixIndex, modiefiedGradientMatrix.getEntry(0, 0));
-			xModifiedGradients.setEntry(currentMatrixIndex+1, modiefiedGradientMatrix.getEntry(0, 1));
-			xModifiedGradients.setEntry(currentMatrixIndex+2, modiefiedGradientMatrix.getEntry(0, 2));
-			yModifiedGradients.setEntry(currentMatrixIndex, modiefiedGradientMatrix.getEntry(1, 0));
-			yModifiedGradients.setEntry(currentMatrixIndex+1, modiefiedGradientMatrix.getEntry(1, 1));
-			yModifiedGradients.setEntry(currentMatrixIndex+2, modiefiedGradientMatrix.getEntry(1, 2));
-			zModifiedGradients.setEntry(currentMatrixIndex, modiefiedGradientMatrix.getEntry(2, 0));
-			zModifiedGradients.setEntry(currentMatrixIndex+1, modiefiedGradientMatrix.getEntry(2, 1));
-			zModifiedGradients.setEntry(currentMatrixIndex+2, modiefiedGradientMatrix.getEntry(2, 2));
+		x = new PdVector(n);
+		y = new PdVector(n);
+		z = new PdVector(n);
+		
+		for(int i = 0; i < n; i++){
+			x.setEntry(i, m_geom.getVertex(i).getEntry(0));
+			y.setEntry(i, m_geom.getVertex(i).getEntry(1));
+			z.setEntry(i, m_geom.getVertex(i).getEntry(2));
+		}
+		
+		
+		xGradientTilda = PnSparseMatrix.rightMultVector(gradientMatrix, x, new PdVector());
+		yGradientTilda = PnSparseMatrix.rightMultVector(gradientMatrix, y, new PdVector());
+		zGradientTilda = PnSparseMatrix.rightMultVector(gradientMatrix, z, new PdVector());
+		
+		for(int i = 0; i < m_geom.getNumElements(); i++){
+			PiVector element = m_geom.getElement(i);
+			if(element.hasTag(PsObject.IS_SELECTED)){
+				PdVector triangleX = new PdVector(xGradientTilda.getEntry(i*3), xGradientTilda.getEntry(i*3+1), xGradientTilda.getEntry(i*3+2));
+				PdVector tempx = PdVector.copyNew(triangleX).leftMultMatrix(A);
+				xGradientTilda.setEntry(i*3, tempx.getEntry(0));
+				xGradientTilda.setEntry(i*3+1, tempx.getEntry(1));
+				xGradientTilda.setEntry(i*3+2, tempx.getEntry(2));
+				
+				PdVector triangleY = new PdVector(yGradientTilda.getEntry(i*3), yGradientTilda.getEntry(i*3+1), yGradientTilda.getEntry(i*3+2));
+				PdVector tempy = PdVector.copyNew(triangleY).leftMultMatrix(A);
+				yGradientTilda.setEntry(i*3, tempy.getEntry(0));
+				yGradientTilda.setEntry(i*3+1, tempy.getEntry(1));
+				yGradientTilda.setEntry(i*3+2, tempy.getEntry(2));
+				
+				PdVector triangleZ = new PdVector(zGradientTilda.getEntry(i*3), zGradientTilda.getEntry(i*3+1), zGradientTilda.getEntry(i*3+2));
+				PdVector tempz = PdVector.copyNew(triangleZ).leftMultMatrix(A);
+				zGradientTilda.setEntry(i*3, tempz.getEntry(0));
+				zGradientTilda.setEntry(i*3+1, tempz.getEntry(1));
+				zGradientTilda.setEntry(i*3+2, tempz.getEntry(2));
+			}
 		}
 	}
 	
@@ -157,31 +182,25 @@ public class Assignment2 extends PjWorkshop {
 	}
 	
 	public void editMesh(PdMatrix A) throws Exception{
+		this.A = A;
 		getGradientMatrix(A);
-		setModifiedVectors();
+		contstructGTilda();
 		PnSparseMatrix GTMv = PnSparseMatrix.multMatrices(gradientMatrix.transposeNew(), Mv, new PnSparseMatrix());
 		PnSparseMatrix S = PnSparseMatrix.multMatrices(GTMv, gradientMatrix, new PnSparseMatrix());
-		PdVector bx = PnSparseMatrix.rightMultVector(GTMv, xModifiedGradients, new PdVector());
-		PdVector by = PnSparseMatrix.rightMultVector(GTMv, yModifiedGradients, new PdVector());
-		PdVector bz = PnSparseMatrix.rightMultVector(GTMv, zModifiedGradients, new PdVector());
+		PdVector bx = PnSparseMatrix.rightMultVector(GTMv, xGradientTilda, new PdVector());
+		PdVector by = PnSparseMatrix.rightMultVector(GTMv, yGradientTilda, new PdVector());
+		PdVector bz = PnSparseMatrix.rightMultVector(GTMv, zGradientTilda, new PdVector());
 		int n = m_geom.getNumVertices();
 		xSolved = new PdVector(n);
 		ySolved = new PdVector(n);
 		zSolved = new PdVector(n);
-		long factorization = PnMumpsSolver.factor(S, PnMumpsSolver.Type.GENERAL_SYMMETRIC);
-		PnMumpsSolver.solve(factorization, xSolved, bx);
-		PnMumpsSolver.solve(factorization, ySolved, by);
-		PnMumpsSolver.solve(factorization, zSolved, bz);
+		//long factorization = PnMumpsSolver.factor(S, PnMumpsSolver.Type.GENERAL_SYMMETRIC);
+		//PnMumpsSolver.solve(factorization, xSolved, bx);
+		//PnMumpsSolver.solve(factorization, ySolved, by);
+		//PnMumpsSolver.solve(factorization, zSolved, bz);
+		PnMumpsSolver.solve(S, xSolved, bx, PnMumpsSolver.Type.GENERAL_SYMMETRIC);
+		PnMumpsSolver.solve(S, ySolved, by, PnMumpsSolver.Type.GENERAL_SYMMETRIC);
+		PnMumpsSolver.solve(S, zSolved, bz, PnMumpsSolver.Type.GENERAL_SYMMETRIC);
 		changeVertices();
-		PsDebug.message("G: " + gradientMatrix.toString());
-		PsDebug.message("GT: " + gradientMatrix.transposeNew().toString());
-		PsDebug.message("Mv: " + Mv.toString());
-		PsDebug.message("S: " + S.toString());
-		PsDebug.message("xModifiedGradients: " + xModifiedGradients.toString());
-		PsDebug.message("bx: " + bx.toString());
-		PsDebug.message("GTMv: " + GTMv.toString());
-		PsDebug.message("factorization: " + factorization);
-		PsDebug.message("bx: " + bx.toString());
-		PsDebug.message("xSolved: " + xSolved.toString());
 	}
 }
