@@ -24,7 +24,6 @@ public class Assignment2 extends PjWorkshop {
 	PgElementSet m_geom;
 	PgElementSet m_geomSave;
 	PnSparseMatrix gradientMatrix;
-	ArrayList<PdMatrix> modifiedGradientMatrices;
 	PdVector xGradientTilda;
 	PdVector yGradientTilda;
 	PdVector zGradientTilda;
@@ -53,21 +52,18 @@ public class Assignment2 extends PjWorkshop {
 		super.init();
 	}
 	
+	// Fills the gradient matrix G (3m by n) by all the small gradient matrices and also fills the Mv (3m by 3m) matrix with triangle areas on the diagonal.
 	public PnSparseMatrix getGradientMatrix(PdMatrix A){
 		PiVector[] elements = m_geom.getElements();
 		int sizeElements = m_geom.getNumElements();
-		
 		int numOfVertices = m_geom.getNumVertices();
-		
-	//	PdMatrix gradientMatrix = new PdMatrix((sizeElements*3), numOfVertices);
 		
 		gradientMatrix = new PnSparseMatrix((sizeElements*3),numOfVertices,3);
 		Mv = new PnSparseMatrix((sizeElements*3),(sizeElements*3),1);
-		modifiedGradientMatrices = new ArrayList<PdMatrix>();
 		
 		for(int i = 0; i< elements.length;i++){
 			
-			PdMatrix temp = getGradientMatrix(elements[i], A, i);
+			PdMatrix temp = getSmallGradientMatrixAndFillMv(elements[i], i);
 			
 			for(int j = 0; j<3;j++){
 				
@@ -90,7 +86,8 @@ public class Assignment2 extends PjWorkshop {
 		return gradientMatrix;
 }
 
-	public PdMatrix getGradientMatrix(PiVector triangle, PdMatrix A, int currentTriangleIndex){
+	// Computes for every triangle the small gradient matrix (3 by 3) and fills for every triangle the Mv.
+	public PdMatrix getSmallGradientMatrixAndFillMv(PiVector triangle, int currentTriangleIndex){
 		PdVector p1 = m_geom.getVertex(triangle.getEntry(0));
 		PdVector p2 = m_geom.getVertex(triangle.getEntry(1));
 		PdVector p3 = m_geom.getVertex(triangle.getEntry(2));
@@ -118,13 +115,6 @@ public class Assignment2 extends PjWorkshop {
 		triangleGradientMatrix.setColumn(2, PdVector.crossNew(n, e3));
 		triangleGradientMatrix.multScalar(1d/(2*area));
 		
-		// Saves the small modified gradient matrices.
-		PiVector element = m_geom.getElement(currentTriangleIndex);
-		PdMatrix modiefiedGradientMatrix = PdMatrix.copyNew(triangleGradientMatrix);
-		if(element.hasTag(PsObject.IS_SELECTED))
-			modiefiedGradientMatrix.leftMult(A);
-		modifiedGradientMatrices.add(modiefiedGradientMatrix);
-		
 		// Filles the Mv matrix with area values.
 		int startMv = (currentTriangleIndex*3);
 		Mv.addEntry(startMv,startMv,area);
@@ -134,6 +124,7 @@ public class Assignment2 extends PjWorkshop {
 		return triangleGradientMatrix;
 	}
 	
+	// Multiplies the the gradient matrix (3m by n) with all x, y and z values (n by 1) and if the triangle is selected computes new values by multiplying with A.
 	public void contstructGTilda(){
 		int n = m_geom.getNumVertices();
 		x = new PdVector(n);
@@ -145,7 +136,6 @@ public class Assignment2 extends PjWorkshop {
 			y.setEntry(i, m_geom.getVertex(i).getEntry(1));
 			z.setEntry(i, m_geom.getVertex(i).getEntry(2));
 		}
-		
 		
 		xGradientTilda = PnSparseMatrix.rightMultVector(gradientMatrix, x, new PdVector());
 		yGradientTilda = PnSparseMatrix.rightMultVector(gradientMatrix, y, new PdVector());
@@ -175,16 +165,8 @@ public class Assignment2 extends PjWorkshop {
 		}
 	}
 	
-	public void changeVertices(){
-		for(int i = 0; i < xSolved.getSize(); i++){
-			m_geom.setVertex(i, xSolved.getEntry(i), ySolved.getEntry(i), zSolved.getEntry(i));
-		}
-	}
-	
-	public void editMesh(PdMatrix A) throws Exception{
-		this.A = A;
-		getGradientMatrix(A);
-		contstructGTilda();
+	// Solves GT Mv G x = GT Mv gx.
+	public void solveSystem() throws Exception{
 		PnSparseMatrix GTMv = PnSparseMatrix.multMatrices(gradientMatrix.transposeNew(), Mv, new PnSparseMatrix());
 		PnSparseMatrix S = PnSparseMatrix.multMatrices(GTMv, gradientMatrix, new PnSparseMatrix());
 		PdVector bx = PnSparseMatrix.rightMultVector(GTMv, xGradientTilda, new PdVector());
@@ -201,6 +183,27 @@ public class Assignment2 extends PjWorkshop {
 		PnMumpsSolver.solve(S, xSolved, bx, PnMumpsSolver.Type.GENERAL_SYMMETRIC);
 		PnMumpsSolver.solve(S, ySolved, by, PnMumpsSolver.Type.GENERAL_SYMMETRIC);
 		PnMumpsSolver.solve(S, zSolved, bz, PnMumpsSolver.Type.GENERAL_SYMMETRIC);
+	}
+	
+	// Changes vertices based on the computed x, y and z values.
+	public void changeVertices(){
+		for(int i = 0; i < xSolved.getSize(); i++){
+			m_geom.setVertex(i, xSolved.getEntry(i), ySolved.getEntry(i), zSolved.getEntry(i));
+		}
+	}
+	
+	// Edits Mesh based on input matrix A.
+	public void editMesh(PdMatrix A) throws Exception{
+		this.A = A;
+		getGradientMatrix(A);
+		contstructGTilda();
+		solveSystem();
 		changeVertices();
+	}
+	
+	public void undo(){
+		super.reset();
+		m_geom 		= (PgElementSet)super.m_geom;
+		m_geomSave 	= (PgElementSet)super.m_geomSave;
 	}
 }

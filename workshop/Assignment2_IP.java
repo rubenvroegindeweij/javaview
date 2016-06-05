@@ -22,7 +22,7 @@ import jv.object.PsDebug;
 
 public class Assignment2_IP extends PjWorkshop_IP implements ActionListener {
 
-	protected   Button			m_bGetGradientMatrix;
+	protected   Button			m_bGetGradientMatrix, m_bUndo;
 	protected	TextField		tf1, tf2, tf3, tf4, tf5, tf6, tf7, tf8, tf9;
 	protected	PdMatrix		A;
 	
@@ -77,10 +77,13 @@ public class Assignment2_IP extends PjWorkshop_IP implements ActionListener {
 		panel3.add(tf9);
 		add(panel3);
 		
-		m_bGetGradientMatrix = new Button("Get Gradient Matrix");
+		m_bGetGradientMatrix = new Button("Edit Mesh");
 		m_bGetGradientMatrix.addActionListener(this);
+		m_bUndo = new Button("Undo");
+		m_bUndo.addActionListener(this);
 		Panel panel4 = new Panel(new FlowLayout(FlowLayout.CENTER));
 		panel4.add(m_bGetGradientMatrix);
+		panel4.add(m_bUndo);
 		add(panel4);
 		
 		validate();
@@ -105,8 +108,13 @@ public class Assignment2_IP extends PjWorkshop_IP implements ActionListener {
 			catch(Exception e){
 				PsDebug.message("EXCEPTION: " + e.toString());
 			}
-			m_a2.m_geom.update(m_a2.m_geom);
+			m_a2.m_geom.update(null);
 			//PsDebug.message("Gradient Matrix: " + gradientMatrix.toString());
+		}
+		
+		if (source == m_bUndo) {
+			m_a2.undo();
+			m_a2.m_geom.update(null);
 		}
 
 	}
