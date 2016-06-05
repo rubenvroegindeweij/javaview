@@ -202,8 +202,6 @@ public class Assignment2 extends PjWorkshop {
 	}
 	
 	public void undo(){
-		super.reset();
-		m_geom 		= (PgElementSet)super.m_geom;
-		m_geomSave 	= (PgElementSet)super.m_geomSave;
+		m_geom.setVertices(m_geomSave.getVertices());
 	}
 }

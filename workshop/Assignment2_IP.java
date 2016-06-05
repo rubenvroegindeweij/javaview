@@ -79,7 +79,7 @@ public class Assignment2_IP extends PjWorkshop_IP implements ActionListener {
 
 		m_bGetGradientMatrix = new Button("Edit Mesh");
 		m_bGetGradientMatrix.addActionListener(this);
-		m_bUndo = new Button("Undo");
+		m_bUndo = new Button("Reset");
 		m_bUndo.addActionListener(this);
 		Panel panel4 = new Panel(new FlowLayout(FlowLayout.CENTER));
 		panel4.add(m_bGetGradientMatrix);
