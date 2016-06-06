@@ -125,7 +125,7 @@ public class Assignment2 extends PjWorkshop {
 	}
 
 	// Multiplies the the gradient matrix (3m by n) with all x, y and z values (n by 1) and if the triangle is selected computes new values by multiplying with A.
-	public void contstructGTilda() {
+	public void constructGTilda() {
 		int n = m_geom.getNumVertices();
 		x = new PdVector(n);
 		y = new PdVector(n);
@@ -196,7 +196,7 @@ public class Assignment2 extends PjWorkshop {
 	public void editMesh(PdMatrix A) throws Exception {
 		this.A = A;
 		getGradientMatrix(A);
-		contstructGTilda();
+		constructGTilda();
 		solveSystem();
 		changeVertices();
 	}
