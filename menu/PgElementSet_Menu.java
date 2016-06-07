@@ -22,7 +22,8 @@ public class PgElementSet_Menu extends PgPointSet_Menu {
 		Assignment1Task1	("Assignment1Task1..."),
 		Assignment1Task2	("Assignment1Task2..."),
 		Assignment1Task3	("Assignment1Task3..."),
-		Assignment2	("Assignment2...")
+		Assignment2			("Assignment2..."),
+		Assignment3			("Assignment3...")
 		// Additional entries...
 		;
 		protected final String name;
@@ -141,6 +142,18 @@ public class PgElementSet_Menu extends PgPointSet_Menu {
 			dialog = new PjWorkshop_Dialog(false);
 			dialog.setParent(a2);
 			dialog.update(a2);
+			dialog.setVisible(true);
+			break;
+		case Assignment3:
+			Assignment3 a3 = new Assignment3();
+			a3.setGeometry(m_elementSet);
+			if (currDisp == null) {
+				if (PsDebug.WARNING) PsDebug.warning("missing display.");
+			} else
+				a3.setDisplay(currDisp);
+			dialog = new PjWorkshop_Dialog(false);
+			dialog.setParent(a3);
+			dialog.update(a3);
 			dialog.setVisible(true);
 			break;
 		}
