@@ -23,6 +23,7 @@ import jv.object.PsDebug;
 public class Assignment3_IP extends PjWorkshop_IP implements ActionListener {
 
 	protected   Button			m_bSmoothSurface, m_bUndo;
+	protected	Label			m_lStepWidth;
 	protected	TextField		tf1;
 
 	Assignment3 m_a3;
@@ -48,9 +49,10 @@ public class Assignment3_IP extends PjWorkshop_IP implements ActionListener {
 
 		addSubTitle("Please set the stepwidth used for surface smoothing.");
 
+		m_lStepWidth = new Label("Stepwidth");
 		tf1 = new TextField("0.5", 2);
-
 		Panel panel1 = new Panel(new FlowLayout(FlowLayout.CENTER));
+		panel1.add(m_lStepWidth);
 		panel1.add(tf1);
 		add(panel1);
 

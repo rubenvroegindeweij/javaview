@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import dev6.numeric.PnMumpsSolver;
 import jvx.numeric.PnSparseMatrix;
 import jv.object.PsObject;
+import jvx.geom.PgVertexStar;
 
 public class Assignment3 extends PjWorkshop {
 
@@ -53,7 +54,27 @@ public class Assignment3 extends PjWorkshop {
 	// Smooth the surface based on input stepwidth.
 	public void smoothSurface(double stepwidth) throws Exception {
 		this.stepwidth = stepwidth;
-		// the code for smoothing goes here
+		// ======== the code for smoothing goes under here ========
+		
+		// Generate a PiVector[] which contains a list of adjacent vertices for each vertex of the geometry
+		/*
+		PiVector[] NeighbouringVertices = makeVertexNeighbours(m_geom);
+		int numOfVertices = m_geom.getNumVertices();
+		PsDebug.message("Length of NeighbouringVertices[]: " + Integer.toString(NeighbouringVertices.length));
+		PsDebug.message("Size of numOfVertices" + Integer.toString(numOfVertices));
+		*/
+
+		// for each vertice, find its neighbors
+
+		// compute the average coordinate of its neighbors
+
+		// find the difference between the avg coordiante and the original one
+
+		// multiply with stepwidth
+
+		// compute the new coordinates
+
+		// change the original model
 	}
 
 	public void undo() {
