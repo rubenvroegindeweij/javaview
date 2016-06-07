@@ -53,7 +53,7 @@ public class Assignment2 extends PjWorkshop {
 	}
 
 	// Fills the gradient matrix G (3m by n) by all the small gradient matrices and also fills the Mv (3m by 3m) matrix with triangle areas on the diagonal.
-	public PnSparseMatrix getGradientMatrix(PdMatrix A) {
+	public PnSparseMatrix getGradientMatrix() {
 		PiVector[] elements = m_geom.getElements();
 		int sizeElements = m_geom.getNumElements();
 		int numOfVertices = m_geom.getNumVertices();
@@ -195,7 +195,7 @@ public class Assignment2 extends PjWorkshop {
 	// Edits Mesh based on input matrix A.
 	public void editMesh(PdMatrix A) throws Exception {
 		this.A = A;
-		getGradientMatrix(A);
+		getGradientMatrix();
 		constructGTilda();
 		solveSystem();
 		changeVertices();
