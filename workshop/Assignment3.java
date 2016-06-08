@@ -42,55 +42,28 @@ public class Assignment3 extends PjWorkshop {
 		super.init();
 	}
 
-	// Change vertices based on the new x, y and z coordinates.
-	/*
-	public void changeVertices() {
-		for (int i = 0; i < xNew.getSize(); i++) {
-			m_geom.setVertex(i, xNew.getEntry(i), yNew.getEntry(i), zNew.getEntry(i));
-		}
-	}
-	*/
-
-	// Smooth the surface based on input stepwidth.
+	// smooth the surface based on input stepwidth
 	public void smoothSurface(double stepwidth) throws Exception {
 		this.stepwidth = stepwidth;
-		
+		// for each vertice, find its neighbours and do some calculation
 		PiVector[] NeighbouringVertices = PgVertexStar.makeVertexNeighbours(m_geom);
-		for(int i = 0; i < m_geom.getNumVertices(); i++){
+		for (int i = 0; i < m_geom.getNumVertices(); i++) {
 			PdVector currentVertex = m_geom.getVertex(i);
 			PdVector tempVertex = new PdVector(0d, 0d, 0d);
-			int n = NeighbouringVertices[i].getSize();
-			for(int j = 0; j < n; j++){
-				PdVector neighbour = m_geom.getVertex(NeighbouringVertices[i].getEntry(j));
-				tempVertex.add(neighbour);
+			int numOfNeighbours = NeighbouringVertices[i].getSize();
+			for (int j = 0; j < numOfNeighbours; j++) {
+				PdVector oneNeighbour = m_geom.getVertex(NeighbouringVertices[i].getEntry(j));
+				tempVertex.add(oneNeighbour);
 			}
-			tempVertex.multScalar(1/n);
+			// compute the average coordinate of its neighbors
+			tempVertex.multScalar(1d / (double)numOfNeighbours);
+			// find the difference between the average coordiante and the original one
 			tempVertex.sub(currentVertex);
+			// multiply with stepwidth
 			tempVertex.multScalar(stepwidth);
+			// compute the new coordinates
 			currentVertex.add(tempVertex);
 		}
-		
-		// ======== the code for smoothing goes under here ========
-		
-		// Generate a PiVector[] which contains a list of adjacent vertices for each vertex of the geometry
-		/*
-		PiVector[] NeighbouringVertices = makeVertexNeighbours(m_geom);
-		int numOfVertices = m_geom.getNumVertices();
-		PsDebug.message("Length of NeighbouringVertices[]: " + Integer.toString(NeighbouringVertices.length));
-		PsDebug.message("Size of numOfVertices" + Integer.toString(numOfVertices));
-		*/
-
-		// for each vertice, find its neighbors
-
-		// compute the average coordinate of its neighbors
-
-		// find the difference between the avg coordiante and the original one
-
-		// multiply with stepwidth
-
-		// compute the new coordinates
-
-		// change the original model
 	}
 
 	public void undo() {
