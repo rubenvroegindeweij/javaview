@@ -46,9 +46,10 @@ public class Assignment3 extends PjWorkshop {
 	public void smoothSurface(double stepwidth) throws Exception {
 		this.stepwidth = stepwidth;
 		// for each vertice, find its neighbours and do some calculation
+		PgElementSet clonedGeom = (PgElementSet) m_geom.clone();
 		PiVector[] NeighbouringVertices = PgVertexStar.makeVertexNeighbours(m_geom);
 		int numOfVertices = m_geom.getNumVertices();
-		PdVector[] newVertices = m_geom.getVertices();
+		PdVector[] newVertices = (PdVector[]) clonedGeom.getVertices();
 		for (int i = 0; i < numOfVertices; i++) {
 			PdVector currentVertex = m_geom.getVertex(i);
 			PdVector tempVertex = new PdVector(0d, 0d, 0d);
