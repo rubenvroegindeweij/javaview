@@ -45,11 +45,12 @@ public class Assignment3 extends PjWorkshop {
 	// smooth the surface based on input stepwidth
 	public void smoothSurface(double stepwidth) throws Exception {
 		this.stepwidth = stepwidth;
-		// for each vertice, find its neighbours and do some calculation
+		// make a copy of the original model, and store the vertices in an array
 		PgElementSet clonedGeom = (PgElementSet) m_geom.clone();
+		PdVector[] newVertices = (PdVector[]) clonedGeom.getVertices();
+		// for each vertice, find its neighbours and store them in an array
 		PiVector[] NeighbouringVertices = PgVertexStar.makeVertexNeighbours(m_geom);
 		int numOfVertices = m_geom.getNumVertices();
-		PdVector[] newVertices = (PdVector[]) clonedGeom.getVertices();
 		for (int i = 0; i < numOfVertices; i++) {
 			PdVector currentVertex = m_geom.getVertex(i);
 			PdVector tempVertex = new PdVector(0d, 0d, 0d);
@@ -64,9 +65,10 @@ public class Assignment3 extends PjWorkshop {
 			tempVertex.sub(currentVertex);
 			// multiply with stepwidth
 			tempVertex.multScalar(stepwidth);
-			// compute the new coordinates
+			// calculate the new coordinates
 			newVertices[i].add(tempVertex);
 		}
+		// update the model with the new vertices
 		m_geom.setVertices(newVertices);
 	}
 
