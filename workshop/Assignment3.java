@@ -54,6 +54,22 @@ public class Assignment3 extends PjWorkshop {
 	// Smooth the surface based on input stepwidth.
 	public void smoothSurface(double stepwidth) throws Exception {
 		this.stepwidth = stepwidth;
+		
+		PiVector[] NeighbouringVertices = PgVertexStar.makeVertexNeighbours(m_geom);
+		for(int i = 0; i < m_geom.getNumVertices(); i++){
+			PdVector currentVertex = m_geom.getVertex(i);
+			PdVector tempVertex = new PdVector(0d, 0d, 0d);
+			int n = NeighbouringVertices[i].getSize();
+			for(int j = 0; j < n; j++){
+				PdVector neighbour = m_geom.getVertex(NeighbouringVertices[i].getEntry(j));
+				tempVertex.add(neighbour);
+			}
+			tempVertex.multScalar(1/n);
+			tempVertex.sub(currentVertex);
+			tempVertex.multScalar(stepwidth);
+			currentVertex.add(tempVertex);
+		}
+		
 		// ======== the code for smoothing goes under here ========
 		
 		// Generate a PiVector[] which contains a list of adjacent vertices for each vertex of the geometry
