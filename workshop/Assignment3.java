@@ -25,6 +25,10 @@ public class Assignment3 extends PjWorkshop {
 	PgElementSet m_geom;
 	PgElementSet m_geomSave;
 	double stepwidth;
+	PnSparseMatrix LaplacianMatrix;
+	PdVector newVertices_x;
+	PdVector newVertices_y;
+	PdVector newVertices_z;
 
 	public Assignment3() {
 		super("Assignment 3");
@@ -73,7 +77,49 @@ public class Assignment3 extends PjWorkshop {
 	}
 
 	public void explicitMCF(double stepwidth) throws Exception {
+		this.stepwidth = stepwidth;
+		// make a copy of the original model, and store the vertices in an array
+		PgElementSet clonedGeom = (PgElementSet) m_geom.clone();
+		PdVector[] newVertices = (PdVector[]) clonedGeom.getVertices();
+		int numOfVertices = m_geom.getNumVertices();
 
+		LaplacianMatrix = new PnSparseMatrix(numOfVertices, numOfVertices);	
+
+		newVertices_x = new PdVector(numOfVertices);
+		newVertices_y = new PdVector(numOfVertices);
+		newVertices_z = new PdVector(numOfVertices);
+		for (int i = 0; i < numOfVertices; i++) {
+			newVertices_x.setEntry(i, m_geom.getVertex(i).getEntry(0));
+			newVertices_y.setEntry(i, m_geom.getVertex(i).getEntry(1));
+			newVertices_z.setEntry(i, m_geom.getVertex(i).getEntry(2));
+		}
+
+		// for test: initialize the matrix to be an identity matrix
+		// should be changed to real Laplace Matrix
+		for (int i = 0; i < numOfVertices; i++){
+			for (int j = 0; j < numOfVertices; j++) {
+				if (i == j) {
+				LaplacianMatrix.addEntry(i, j, 2);	
+				}
+				else {
+				LaplacianMatrix.addEntry(i, j, 0);
+				}								
+			}
+		}
+
+		PdVector tempNewVertices_x = PnSparseMatrix.rightMultVector(LaplacianMatrix, newVertices_x, new PdVector());
+		tempNewVertices_x.multScalar(stepwidth);
+		newVertices_x.sub(tempNewVertices_x);
+		PdVector tempNewVertices_y = PnSparseMatrix.rightMultVector(LaplacianMatrix, newVertices_y, new PdVector());
+		tempNewVertices_y.multScalar(stepwidth);
+		newVertices_y.sub(tempNewVertices_y);
+		PdVector tempNewVertices_z = PnSparseMatrix.rightMultVector(LaplacianMatrix, newVertices_z, new PdVector());
+		tempNewVertices_z.multScalar(stepwidth);
+		newVertices_z.sub(tempNewVertices_z);
+
+		for (int i = 0; i < numOfVertices; i++) {
+			m_geom.setVertex(i, newVertices_x.getEntry(i), newVertices_y.getEntry(i), newVertices_z.getEntry(i));
+		}
 	}
 
 	public void implicitMCF(double stepwidth) throws Exception {
