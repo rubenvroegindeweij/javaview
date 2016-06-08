@@ -22,7 +22,7 @@ import jv.object.PsDebug;
 
 public class Assignment3_IP extends PjWorkshop_IP implements ActionListener {
 
-	protected   Button			m_bSmoothSurface, m_bUndo;
+	protected   Button			m_bIterativeAveraging, m_bExplicitMCF, m_bImplicitMCF, m_bReset;
 	protected	Label			m_lStepWidth;
 	protected	TextField		tf1;
 
@@ -47,7 +47,7 @@ public class Assignment3_IP extends PjWorkshop_IP implements ActionListener {
 		super.setParent(parent);
 		m_a3 = (Assignment3)parent;
 
-		addSubTitle("Please set the stepwidth used for surface smoothing.");
+		addSubTitle("Please set the stepwidth used for surface smoothing, and choose a method by clicking the corresponding button.");
 
 		m_lStepWidth = new Label("Stepwidth");
 		tf1 = new TextField("0.5", 2);
@@ -56,14 +56,29 @@ public class Assignment3_IP extends PjWorkshop_IP implements ActionListener {
 		panel1.add(tf1);
 		add(panel1);
 
-		m_bSmoothSurface = new Button("Smooth Surface");
-		m_bSmoothSurface.addActionListener(this);
-		m_bUndo = new Button("Reset");
-		m_bUndo.addActionListener(this);
+		m_bIterativeAveraging = new Button("Iterative Averaging");
+		m_bIterativeAveraging.addActionListener(this);
 		Panel panel2 = new Panel(new FlowLayout(FlowLayout.CENTER));
-		panel2.add(m_bSmoothSurface);
-		panel2.add(m_bUndo);
+		panel2.add(m_bIterativeAveraging);
 		add(panel2);
+
+		m_bExplicitMCF = new Button("Explicit MCF");
+		m_bExplicitMCF.addActionListener(this);
+		Panel panel3 = new Panel(new FlowLayout(FlowLayout.CENTER));
+		panel3.add(m_bExplicitMCF);
+		add(panel3);
+
+		m_bImplicitMCF = new Button("Implicit MCF");
+		m_bImplicitMCF.addActionListener(this);
+		Panel panel4 = new Panel(new FlowLayout(FlowLayout.CENTER));
+		panel4.add(m_bImplicitMCF);
+		add(panel4);
+
+		m_bReset = new Button("Reset");
+		m_bReset.addActionListener(this);
+		Panel panel5 = new Panel(new FlowLayout(FlowLayout.CENTER));
+		panel5.add(m_bReset);
+		add(panel5);
 
 		validate();
 	}
@@ -79,18 +94,39 @@ public class Assignment3_IP extends PjWorkshop_IP implements ActionListener {
 	public void actionPerformed(ActionEvent event) {
 		Object source = event.getSource();
 
-		if (source == m_bSmoothSurface) {
+		if (source == m_bIterativeAveraging) {
 			double stepwidth = getStepWidth();
 			try {
-				m_a3.smoothSurface(stepwidth);
+				m_a3.iterativeAveraging(stepwidth);
 			} catch (Exception e) {
 				PsDebug.message("EXCEPTION: " + e.toString());
 			}
 			m_a3.m_geom.update(null);
 		}
 
-		if (source == m_bUndo) {
-			m_a3.undo();
+		if (source == m_bExplicitMCF) {
+			double stepwidth = getStepWidth();
+			try {
+				m_a3.explicitMCF(stepwidth);
+			} catch (Exception e) {
+				PsDebug.message("EXCEPTION: " + e.toString());
+			}
+			m_a3.m_geom.update(null);
+		}
+
+		if (source == m_bImplicitMCF) {
+			double stepwidth = getStepWidth();
+			try {
+				m_a3.implicitMCF(stepwidth);
+			} catch (Exception e) {
+				PsDebug.message("EXCEPTION: " + e.toString());
+			}
+			m_a3.m_geom.update(null);
+		}
+
+
+		if (source == m_bReset) {
+			m_a3.reset();
 			m_a3.m_geom.update(null);
 		}
 

@@ -43,7 +43,7 @@ public class Assignment3 extends PjWorkshop {
 	}
 
 	// smooth the surface based on input stepwidth
-	public void smoothSurface(double stepwidth) throws Exception {
+	public void iterativeAveraging(double stepwidth) throws Exception {
 		this.stepwidth = stepwidth;
 		// make a copy of the original model, and store the vertices in an array
 		PgElementSet clonedGeom = (PgElementSet) m_geom.clone();
@@ -72,7 +72,15 @@ public class Assignment3 extends PjWorkshop {
 		m_geom.setVertices(newVertices);
 	}
 
-	public void undo() {
+	public void explicitMCF(double stepwidth) throws Exception {
+
+	}
+
+	public void implicitMCF(double stepwidth) throws Exception {
+
+	}
+
+	public void reset() {
 		m_geom.setVertices(m_geomSave.getVertices());
 	}
 }
