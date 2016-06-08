@@ -47,7 +47,9 @@ public class Assignment3 extends PjWorkshop {
 		this.stepwidth = stepwidth;
 		// for each vertice, find its neighbours and do some calculation
 		PiVector[] NeighbouringVertices = PgVertexStar.makeVertexNeighbours(m_geom);
-		for (int i = 0; i < m_geom.getNumVertices(); i++) {
+		int numOfVertices = m_geom.getNumVertices();
+		PdVector[] newVertices = m_geom.getVertices();
+		for (int i = 0; i < numOfVertices; i++) {
 			PdVector currentVertex = m_geom.getVertex(i);
 			PdVector tempVertex = new PdVector(0d, 0d, 0d);
 			int numOfNeighbours = NeighbouringVertices[i].getSize();
@@ -62,8 +64,9 @@ public class Assignment3 extends PjWorkshop {
 			// multiply with stepwidth
 			tempVertex.multScalar(stepwidth);
 			// compute the new coordinates
-			currentVertex.add(tempVertex);
+			newVertices[i].add(tempVertex);
 		}
+		m_geom.setVertices(newVertices);
 	}
 
 	public void undo() {
