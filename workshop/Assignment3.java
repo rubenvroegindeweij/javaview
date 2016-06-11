@@ -94,7 +94,6 @@ public class Assignment3 extends PjWorkshop {
 
 			gradientMatrix = new PnSparseMatrix((sizeElements * 3), numOfVertices, 3);
 			M = new PnSparseMatrix(numOfVertices, numOfVertices, 1);
-			PsDebug.message("Entry M: " + M.getEntry(1,1));
 			Mv = new PnSparseMatrix((sizeElements * 3), (sizeElements * 3), 1);
 
 			for (int i = 0; i < elements.length; i++) {
@@ -202,11 +201,6 @@ public class Assignment3 extends PjWorkshop {
 		newVertices_z.sub(tempNewVertices_z);
 
 		for (int i = 0; i < numOfVertices; i++) {
-			
-			//double newX = m_geom.getVertex(i).getEntry(0) - newVertices_x.getEntry(i);
-			//double newY = m_geom.getVertex(i).getEntry(1) - newVertices_y.getEntry(i);
-			//double newZ = m_geom.getVertex(i).getEntry(2) - newVertices_z.getEntry(i);
-			
 			m_geom.setVertex(i, newVertices_x.getEntry(i), newVertices_y.getEntry(i), newVertices_z.getEntry(i));
 		}
 	}
@@ -214,14 +208,14 @@ public class Assignment3 extends PjWorkshop {
 	public void calculateMatrices(){
 		getGradientMatrix();
 		
-		PsDebug.message("G Matrix: ");
+	//	PsDebug.message("G Matrix: ");
 		
 		int numOfElements = m_geom.getNumElements();
 		
 		PnSparseMatrix GTMv = PnSparseMatrix.multMatrices(gradientMatrix.transposeNew(), Mv, new PnSparseMatrix());
-		PsDebug.message("GTMV Matrix: ");
+	//	PsDebug.message("GTMV Matrix: ");
 		S = PnSparseMatrix.multMatrices(GTMv, gradientMatrix, new PnSparseMatrix());
-		PsDebug.message("S Matrix: -- " + S.getNumCols() + " X " + S.getNumRows());
+	//	PsDebug.message("S Matrix: -- " + S.getNumCols() + " X " + S.getNumRows());
 	//	PsDebug.message("Mv Matrix: -- " + Mv.getNumCols() + " X " + Mv.getNumRows());
 		PnSparseMatrix MInverse = new PnSparseMatrix(M.getNumRows(), M.getNumCols(), 1);
 		
@@ -233,10 +227,10 @@ public class Assignment3 extends PjWorkshop {
 			MInverse.setEntry(i, i, newValue);
 			
 		}
-		PsDebug.message("M inverse: -- " + MInverse.getNumCols() + " X " + MInverse.getNumRows());
-		PsDebug.message("Minverse Matrix: ");
+		//PsDebug.message("M inverse: -- " + MInverse.getNumCols() + " X " + MInverse.getNumRows());
+		//PsDebug.message("Minverse Matrix: ");
 		L = PnSparseMatrix.multMatrices(MInverse, S, new PnSparseMatrix());
-		PsDebug.message("L Matrix: ");
+		//PsDebug.message("L Matrix: ");
 		
 	}
 
@@ -249,6 +243,7 @@ public class Assignment3 extends PjWorkshop {
 
 	public void implicitMCF(double stepwidth) throws Exception {
 		
+		PsDebug.message("Calculating matrix values ....");
 		this.stepwidth = stepwidth;
 		calculateMatrices();
 		
@@ -258,21 +253,16 @@ public class Assignment3 extends PjWorkshop {
 		
 		int numOfVertices = m_geom.getNumVertices();
 		
+		//construct A = M + tS
 		PnSparseMatrix A = new PnSparseMatrix(numOfVertices,numOfVertices);
 		A.copy(S);
-		PsDebug.message("Acopy: " + A.toString());
-		PsDebug.message("S: " + S.toString());
 		A.multScalar(stepwidth);
-		PsDebug.message("A*step: " + A.toString());
 		A.add(M);
-		
-		PsDebug.message("A + M: " + A.toString());
-		
+		 
+		// construct three vectors containing coordinate system specific values from every vertex
 		PdVector x = new PdVector(numOfVertices);
 		PdVector y = new PdVector(numOfVertices);
 		PdVector z = new PdVector(numOfVertices);
-		
-		PsDebug.message("gjhsJKS	 ");
 		
 		for (int i = 0; i < numOfVertices; i++) {
 			x.setEntry(i, m_geom.getVertex(i).getEntry(0));
@@ -280,28 +270,25 @@ public class Assignment3 extends PjWorkshop {
 			z.setEntry(i, m_geom.getVertex(i).getEntry(2));
 		}
 		
-		PsDebug.message("after loop");
+		//B = Mx (x depending on the coördinate system)
 		PdVector Bx = PnSparseMatrix.rightMultVector(M, x, new PdVector());
 		PdVector By = PnSparseMatrix.rightMultVector(M, y, new PdVector());
 		PdVector Bz = PnSparseMatrix.rightMultVector(M, z, new PdVector());
-		
-		PsDebug.message("Bx: " + Bx.toString());
-		PsDebug.message("By: " + By.toString());
-		PsDebug.message("Bz: " + Bz.toString());
-		
-		PsDebug.message("1: ");
 		
 		xSolved = new PdVector(numOfVertices);
 		ySolved = new PdVector(numOfVertices);
 		zSolved = new PdVector(numOfVertices);
 		
-		PnMumpsSolver.solve(A, xSolved, Bx, PnMumpsSolver.Type.GENERAL_SYMMETRIC);
-		PnMumpsSolver.solve(A, ySolved, By, PnMumpsSolver.Type.GENERAL_SYMMETRIC);
-		PnMumpsSolver.solve(A, zSolved, Bz, PnMumpsSolver.Type.GENERAL_SYMMETRIC);
-		PsDebug.message("1:qweqwe ");
+		long factorization = PnMumpsSolver.factor(A, PnMumpsSolver.Type.UNSYMMETRIC);
+		PnMumpsSolver.solve(factorization, xSolved, Bx);
+		PnMumpsSolver.solve(factorization, ySolved, By);
+		PnMumpsSolver.solve(factorization, zSolved, Bz);
 		
-		PsDebug.message(" LLAASst");
+		//PnMumpsSolver.solve(A, xSolved, Bx, PnMumpsSolver.Type.GENERAL_SYMMETRIC);
+		//PnMumpsSolver.solve(A, ySolved, By, PnMumpsSolver.Type.GENERAL_SYMMETRIC);
+		//PnMumpsSolver.solve(A, zSolved, Bz, PnMumpsSolver.Type.GENERAL_SYMMETRIC);
 		
+		PsDebug.message("Changing vertices....");	
 		changeVertices();
 	}
 
